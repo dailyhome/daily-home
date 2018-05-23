@@ -1,0 +1,80 @@
+version: "3"
+
+services:
+   diot-registry1:
+        ports:
+             - 9000:9000
+        image: minio/minio
+        networks:
+             - func_functions
+        volumes:
+             - /mnt/data1:/export
+        secrets:
+             - diot_registry_access_key
+             - diot_registry_secret_key
+        deploy:
+             restart_policy:
+                  delay: 10s
+                  max_attempts: 10
+                  window: 60s
+        command: server http://diot-registry1/export http://diot-registry2/export http://diot-registry3/export http://diot-registry4/export
+
+   diot-registry2:
+        ports:
+             - 9000:9000
+        image: minio/minio
+        networks:
+             - func_functions
+        volumes:
+             - /mnt/data2:/export
+        secrets:
+             - diot_registry_access_key
+             - diot_registry_secret_key
+        deploy:
+             restart_policy:
+                  delay: 10s
+                  max_attempts: 10
+                  window: 60s
+        command: server http://diot-registry1/export http://diot-registry2/export http://diot-registry3/export http://diot-registry4/export
+
+   diot-registry3:
+        ports:
+             - 9000:9000
+        image: minio/minio
+        networks:
+             - func_functions
+        volumes:
+             - /mnt/data3:/export
+        secrets:
+             - diot_registry_access_key
+             - diot_registry_secret_key
+        deploy:
+             restart_policy:
+                  delay: 10s
+                  max_attempts: 10
+                  window: 60s
+        command: server http://diot-registry1/export http://diot-registry2/export http://diot-registry3/export http://diot-registry4/export
+
+   diot-registry4:
+        ports:
+             - 9000:9000
+        image: minio/minio
+        networks:
+             - func_functions
+        volumes:
+             - /mnt/data4:/export
+        secrets:
+             - diot_registry_access_key
+             - diot_registry_secret_key
+        deploy:
+             restart_policy:
+                  delay: 10s
+                  max_attempts: 10
+                  window: 60s
+        command: server http://diot-registry1/export http://diot-registry2/export http://diot-registry3/export http://diot-registry4/export
+
+volumes:
+     /mnt/data1:
+     /mnt/data2:
+     /mnt/data3:
+     /mnt/data4:

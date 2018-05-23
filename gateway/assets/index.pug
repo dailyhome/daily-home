@@ -1,0 +1,33 @@
+doctype html
+html(lang='en')
+ head
+   title Daily IoT
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   style
+     include css/style.css
+ body
+   div.device
+     h2 Daily IoT Portal
+   div.holoform
+     h3 #{source.deviceName}
+     <br>
+     each val, key in source.jsonMap
+       span.checkbox
+         <label for='{key}'>Switch #{key}</lebel>
+         span
+           if (val == true)
+             input(id=key type='checkbox' name='switch' checked)
+           else
+             input(id=key type='checkbox' name='switch')
+           <label data-on="ON" data-off="OFF"></label>
+     <a href="#" id="checkval">Check Values</a> 
+   include foot.pug
+
+   script(type="text/javascript").
+     var serverAddr="#{source.publicUrl}";
+   script(type="text/javascript").
+     var deviceName="#{source.deviceName}";
+   script(type="text/javascript").
+     var apiToken="#{source.apiToken}";
+   script(type="text/javascript")
+     include javascript/switch.js

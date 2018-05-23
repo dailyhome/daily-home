@@ -1,0 +1,31 @@
+provider:
+  name: faas
+  gateway: http://127.0.0.1:8080
+
+functions:
+
+  # Alexa skill to handle daily-iot alexa skill request
+  diot-alexa:
+    lang: node8-express
+    handler: ./alexa
+    image: s8sg/diot-alexa:0.0.1
+    environment:
+        # The alexa app id for daily-iot skill
+        alexa_app_id: ""
+        # registry_url: http://diot-registry1:9000/
+        # TODO: below values will be read from registry based on user
+        device_url: ""
+        device_name: "IOTDevice"
+
+  # Gateway to handle the UI and API request
+  diot-gateway:
+    lang: node8-express
+    handler: ./gateway
+    image: s8sg/diot-gateway:1.0.0
+    environment:
+        gateway_public_url: ""
+        # registry_url: http://diot-registry1:9000/
+        # TODO: below values will be read from registry based on user
+        device_url: ""
+        device_name: "IOTDevice"
+        api_token: "DA1LY-1OT" 

@@ -1,0 +1,13 @@
+{
+    "version": "1.0",
+    "response": {
+        "outputSpeech": {
+            "type": "PlainText",
+	    "text" : "",
+            "ssml": "<speak><audio src='https://s3.amazonaws.com/ask-soundlibrary/nature/amzn_sfx_ocean_wave_on_rocks_1x_01.mp3'/></speak>"
+        },
+        "shouldEndSession": true
+    },
+    "sessionAttributes": {
+    }
+}
