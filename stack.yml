@@ -15,7 +15,8 @@ functions:
         # registry_url: http://diot-registry1:9000/
         # TODO: below values will be read from registry based on user
         device_url: ""
-        device_name: "IOTDevice"
+        device_name: "mydevice"
+        api_token: "DA1LY-1OT"
 
   # Gateway to handle the UI and API request
   diot-gateway:
@@ -27,5 +28,7 @@ functions:
         # registry_url: http://diot-registry1:9000/
         # TODO: below values will be read from registry based on user
         device_url: ""
-        device_name: "IOTDevice"
-        api_token: "DA1LY-1OT" 
+        device_name: "mydevice"
+        api_token: "DA1LY-1OT"
+        username: "admin"
+        password: "admin"

@@ -6,21 +6,31 @@ html(lang='en')
    style
      include css/style.css
  body
-   div.device
-     h2 Daily IoT Portal
-   div.holoform
-     h3 #{source.deviceName}
-     <br>
-     each val, key in source.jsonMap
-       span.checkbox
-         <label for='{key}'>Switch #{key}</lebel>
-         span
-           if (val == true)
-             input(id=key type='checkbox' name='switch' checked)
-           else
-             input(id=key type='checkbox' name='switch')
-           <label data-on="ON" data-off="OFF"></label>
-     <a href="#" id="checkval">Check Values</a> 
+   a#logout(href="#")
+     h1 DAILY IOT
+   div.container
+       each device, devicename in source.devices
+         div.holoform
+           span.status
+               label(for={devicename}) #{devicename}
+               span
+                 if (device.state == true)
+                   input(id={devicename} type='checkbox' name='status' disabled checked)
+                 else
+                   input(id={devicename} type='checkbox' name='status' disabled)
+                 label(data-on="ACTIVE" data-off="INACTIVE")
+           <br>
+           if (device.state == true)
+             each sstate, sname in device.switches
+               span.checkbox
+                   <label for='{sname}'>Switch #{sname}</lebel>
+                   span
+                       if (sstate == true)
+                         input(id={sname} type='checkbox' name='switch' checked)
+                       else
+                         input(id={sname} type='checkbox' name='switch')
+                       <label data-on="ON" data-off="OFF"></label>
+             <a href="#" id="checkval" class="checkvalue">Check Values</a> 
    include foot.pug
 
    script(type="text/javascript").
@@ -30,4 +40,4 @@ html(lang='en')
    script(type="text/javascript").
      var apiToken="#{source.apiToken}";
    script(type="text/javascript")
-     include javascript/switch.js
+     include javascript/profile.js
