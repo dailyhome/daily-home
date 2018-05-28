@@ -63,6 +63,44 @@ document.getElementById("logout").addEventListener("click", function(event) {
     document.location.reload();
 });
 
+// Check if any device status has changed
+document.getElementsByName("status").forEach(function(elem) {
+    elem.addEventListener("click", function(event) {
+        deviceId = elem.getAttribute("id");
+        taskup();
+
+        var initialVal = !elem.checked;
+        var value = elem.checked ? 'enable' : 'disable';
+        var url = getServer();
+
+        var reqData = {};
+        reqData["socket"] = 'all';
+        reqData["method"] = value;
+        reqData["device"] = deviceId;
+        let data = JSON.stringify(reqData);
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status != 200) {
+                    done();
+                    document.getElementById(deviceId).checked = initialVal;
+                    console.log("Failed to change device state from : " + (initialVal ? "active" : "disable"));
+                } else {
+                    var myObj = JSON.parse(this.responseText);
+                    done(myObj);
+                }
+            }
+        };
+        xmlHttp.open("POST", url, true);
+        xmlHttp.setRequestHeader('token', apiToken);
+        xmlHttp.setRequestHeader('accept', "application/json");
+        xmlHttp.setRequestHeader("Content-Type", "application/json");
+        xmlHttp.send(data);
+    });
+});
+
+
 // Check if any switch state has changed
 document.getElementsByName("switch").forEach(function(elem) {
     elem.addEventListener("click", function(event) {
@@ -87,6 +125,7 @@ document.getElementsByName("switch").forEach(function(elem) {
                     document.getElementById(switchId).checked = initialVal;
                     console.log("Failed to change switch state from : " + (initialVal ? "enable" : "disable"));
                 } else {
+		    document.getElementById(deviceNames).checked = true;
                     var myObj = JSON.parse(this.responseText);
                     done(myObj);
                 }

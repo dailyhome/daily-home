@@ -93,46 +93,14 @@ function loginPageHandle(context, event) {
         .succeed(resp);
 };
 
-var pendingDevice = 0;
-var deviceObject = {};
-
-function devDone(context, user, token, device, resp) {
-    var deviceProp = {};
-
-    try {
-        deviceProp['switches'] = JSON.parse(resp);
-        deviceProp['state'] = true;
-    } catch (error) {
-        console.log("failed to parse device response, " + error.message);
-        deviceProp['switches'] = {};
-        deviceProp['state'] = false;
-    }
-    deviceObject['devices'][device] = deviceProp;
-
-    if (--pendingDevice === 0) {
-        deviceObject['publicUrl'] = process.env.gateway_public_url;
-        deviceObject['apiToken'] = token;
-        console.log(deviceObject);
-        var resp = compiledFunction({
-            source: deviceObject
-        });
-        return context
-            .status(200)
-            .headers({
-                "Content-Type": htmlType
-            })
-            .succeed(resp);
-    }
-};
-
 function profilePageHandle(context, event) {
     compiledFunction = pug.compileFile('./function/assets/index.pug');
 
     var user = process.env.username;
     var token = process.env.api_token;
+    var deviceObject = {};
 
     // total No of device
-    pendingDevice = 1;
     deviceObject['devices'] = {};
 
     // TODO: For each device {}
@@ -151,10 +119,30 @@ function profilePageHandle(context, event) {
     return request.get(req, (err, res, body) => {
         if (err) {
             console.log("failed to request device: " + err);
-            devDone(context, user, token, device, "");
-        } else {
-            devDone(context, user, token, device, body);
+            body = "";
         }
+        var deviceProp = {};
+        try {
+            deviceProp['switches'] = JSON.parse(body);
+            deviceProp['state'] = true;
+        } catch (error) {
+            console.log("failed to parse device response, " + error.message);
+            deviceProp['switches'] = {};
+            deviceProp['state'] = false;
+        }
+        deviceObject['devices'][device] = deviceProp;
+
+        deviceObject['publicUrl'] = process.env.gateway_public_url;
+        deviceObject['apiToken'] = token;
+        var resp = compiledFunction({
+            source: deviceObject
+        });
+        return context
+            .status(200)
+            .headers({
+                "Content-Type": htmlType
+            })
+            .succeed(resp);
     });
 };
 

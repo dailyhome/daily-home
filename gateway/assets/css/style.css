@@ -290,13 +290,14 @@ h1 {
     text-align: left;
     width: 90px;
     height: 20px;
-    background-color: #16191c;
+    background-color: #101010;
     overflow: hidden;
 }
 
 .holoform .status span input {
     display: block;
     position: absolute;
+    cursor: pointer;
     top: 0;
     right: 0;
     bottom: 0;
@@ -304,14 +305,13 @@ h1 {
     width: 100%;
     height: 100%;
     margin: 0 0;
-    cursor: pointer;
     opacity: 0;
     filter: alpha(opacity=0);
     z-index: 5;
 }
 
 .holoform .status span label {
-    background-color: #666;
+    background-color: #e53f24;
     display: inline-block;
     width: 0px;
     text-align: center;
@@ -326,8 +326,24 @@ h1 {
     content: attr(data-off);
 }
 
+.holoform .status span input:disabled {
+  cursor: default;
+}
+
+.holoform .status span input:disabled + label {
+    background-color: #666;
+    z-index: 3;
+    position: absolute;
+    color: white;
+}
+
+.holoform .status span input:disabled + label:before {
+    content: attr(unreachable);
+}
+
+
 .holoform .status span input:checked + label {
-    background-color: #3181aa;
+    background-color: #12aa87;
     z-index: 3;
     position: absolute;
     color: white;

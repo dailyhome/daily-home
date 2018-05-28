@@ -15,10 +15,10 @@ html(lang='en')
                label(for=devicename) #{devicename}
                span
                  if (device.state == true)
-                   input(id=devicename type='checkbox' name='status' disabled checked)
+                   input(id=devicename type='checkbox' name='status' checked)
                  else
                    input(id=devicename type='checkbox' name='status' disabled)
-                 label(data-on="ACTIVE" data-off="INACTIVE")
+                 label(data-on="ACTIVE" data-off="DISABLE" unreachable="INACTIVE")
            <br>
            if (device.state == true)
              each sstate, sname in device.switches
