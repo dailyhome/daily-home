@@ -4,44 +4,68 @@
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   float: none
 }
+
 body {
-  font-family: 'open sans', helvetica, arial, sans;
-  background: url(https://farm4.staticflickr.com/3788/8864931805_f3e2330abe_k.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+    font-family: 'open sans', helvetica, arial, sans;
+    font-family: Verdana;
+    padding: 10px;
+    position: center;
+    font-size: 13px;
+    background: url(https://farm5.staticflickr.com/4624/39090008965_26975b147f_b.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 footer {
-     	position: fixed;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	background-color: #16191c;
-	color: #aaa;
-	text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    opacity: 0.9;
+    background-color: #001011;
+    color: #aaa;
+    text-align: center;
 }
 
-h1 {
-  width: auto;
-  max-width: 180px;
-  color: #e3f9fa;
-  font-family: 'open sans';
-  font-size: 2.3em;
-  display: block;
-  text-align: center;
-  text-shadow: 2px 1px 1px #202020;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: auto;
-  background: #373737;
-  box-shadow: inset 0px 1px 1px rgba(128, 128, 128, 0.9);
-  border: 2px solid #1d1d1d;
-  font-weight: 100;
+a {
+  text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}
+
+h1 {text-decoration: none;
+    width: auto;
+    max-width: 180px;
+    opacity: 0.9;
+    color: #e3f9fa;
+    font-family: 'open sans';
+    font-size: 2.3em;
+    display: block;
+    text-align: center;
+    text-shadow: 2px 1px 1px #202020;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    background: #373737;
+    box-shadow: inset 0px 1px 1px rgba(128, 128, 128, 0.9);
+    border: 2px solid #1d1d1d;
+    font-weight: 100;
 }
 .log-form {
   width: 40%;
+  opacity: 0.97;
   min-width: 320px;
   max-width: 475px;
   background: #fff;

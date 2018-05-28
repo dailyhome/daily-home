@@ -17,7 +17,7 @@ body {
     padding: 10px;
     position: center;
     font-size: 13px;
-    background: url(https://farm4.staticflickr.com/3788/8864931805_f3e2330abe_k.jpg) no-repeat center center fixed;
+    background: url(https://farm5.staticflickr.com/4624/39090008965_26975b147f_b.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -29,15 +29,33 @@ footer {
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: #16191c;
+    opacity: 0.9;
+    background-color: #001011;
     color: #aaa;
     text-align: center;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
 }
 
 h1 {
     text-decoration: none;
     width: auto;
     max-width: 180px;
+    opacity: 0.9;
     color: #e3f9fa;
     font-family: 'open sans';
     font-size: 2.3em;
@@ -53,37 +71,11 @@ h1 {
     font-weight: 100;
 }
 
-.logout {
-    display: block;
-    position: relative;
-    float: right;
-    background: #1fb5bf;
-    border: 1px solid #1ba0a9;
-    padding: .5em 2em;
-    color: white;
-    margin-left: auto;
-    margin-top: auto;
-    margin-right: .5em;
-    box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.2);
-}
-
-.logout:hover {
-    background: #23cad5;
-}
-
-.logout:active {
-    background: #1fb5bf;
-    box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.1);
-}
-
-.logout:focus {
-    outline: none;
-}
-
 .container {
     width: 40%;
     min-width: 320px;
     max-width: 475px;
+    opacity: 0.95;
     background: #fff;
     position: absolute;
     top: 50%;
@@ -99,6 +91,7 @@ h1 {
 @media (max-width: 40em) {
     .container {
         width: 95%;
+        opacity: 0.95;
         position: relative;
         margin: 2.5% auto 0 auto;
         left: 0%;
@@ -114,6 +107,7 @@ h1 {
     max-width: 480px;
     width: 100%;
     color: #aaa;
+    opacity: 1.0;
     font-size: 1.38em;
     text-transform: uppercase;
     border: px solid #1d1d1d;
@@ -122,16 +116,18 @@ h1 {
     padding: 10px;
     position: center;
     margin: auto;
-    background-color: #252525;
+    background-color: #212121;
     font-family: Roboto, "Droid Sans", Arial, Helvetica, sans-serif;
     box-shadow: 0px 0px 1px 0px #000, 1px 1px 22px 2px #333a22;
 }
 
 .holoform:hover, .holoform .checkbox:active {
     box-shadow: 0px 0px 1px 0px #000, 1px 1px 22px 5px #3181aa;
+    background-color: #151515;
 }
 
 .holoform .checkvalue {
+    opacity: 1.0;
     box-shadow: none;
     height: 5px;
     margin: 1px 0;
@@ -147,6 +143,7 @@ h1 {
     box-shadow: none;
     height: 10px;
     margin: 10px 0;
+    opacity: 1.0;
     padding: 0px 0 20px;
     display: block;
     position: relative;
@@ -155,6 +152,7 @@ h1 {
 }
 
 .holoform .checkbox label {
+    opacity: 1.0;
     font-family: 'open sans';
     font-size: 15px;
     line-height: 20px;
@@ -175,6 +173,7 @@ h1 {
     position: relative;
     float: right;
     text-align: left;
+    opacity: 1.0;
     width: 70px;
     height: 20px;
     background-color: #252525;
@@ -188,6 +187,7 @@ h1 {
     right: 0;
     bottom: 0;
     left: 0;
+    opacity:1.0;
     width: 100%;
     height: 100%;
     margin: 0 0;
@@ -198,6 +198,7 @@ h1 {
 }
 
 .holoform .checkbox span label {
+    opacity: 1.0;
     background-color: #666;
     display: inline-block;
     width: 35px;
@@ -270,7 +271,7 @@ h1 {
     font-family: 'open sans';
     font-size: 1.4em;
     display: block;
-    background: #16191c;
+    background: #101010;
     text-transform: uppercase;
     box-shadow: inset 0px 4px 1px rgba(22, 22, 666, 0.05);
     border: px solid #1d1d1d;
@@ -350,3 +351,4 @@ h1 {
 .holoform .status span input:checked + label:after {
     left: 0;
 }
+

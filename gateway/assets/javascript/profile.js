@@ -28,32 +28,32 @@ function getServer() {
     return server;
 };
 
-		
+
 function checkval(event) {
-            var url = getServer();
-            var xmlHttp = new XMLHttpRequest();
+    var url = getServer();
+    var xmlHttp = new XMLHttpRequest();
 
-            var reqData = {};
-            reqData["method"] = "state";
-            reqData["device"] = deviceName;
-            data = JSON.stringify(reqData);
+    var reqData = {};
+    reqData["method"] = "state";
+    reqData["device"] = deviceNames;
+    data = JSON.stringify(reqData);
 
-            xmlHttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status != 200) {
-                    alert("Failed to get state from : " + url);
-                    return;
-                }
-                if (this.readyState == 4 && this.status == 200) {
-                    var jsObj = JSON.parse(this.responseText);
-                    let data = JSON.stringify(jsObj[deviceName], null, 4);
-                    alert(data);
-                }
-            };
-            xmlHttp.open("POST", url, true);
-            xmlHttp.setRequestHeader('token', apiToken);
-            xmlHttp.setRequestHeader('accept', "application/json");
-            xmlHttp.setRequestHeader("Content-Type", "application/json");
-            xmlHttp.send(data);
+    xmlHttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status != 200) {
+            alert("Failed to get state from : " + url);
+            return;
+        }
+        if (this.readyState == 4 && this.status == 200) {
+            var jsObj = JSON.parse(this.responseText);
+            let data = JSON.stringify(jsObj[deviceNames], null, 4);
+            alert(data);
+        }
+    };
+    xmlHttp.open("POST", url, true);
+    xmlHttp.setRequestHeader('token', apiToken);
+    xmlHttp.setRequestHeader('accept', "application/json");
+    xmlHttp.setRequestHeader("Content-Type", "application/json");
+    xmlHttp.send(data);
 };
 
 
@@ -76,7 +76,7 @@ document.getElementsByName("switch").forEach(function(elem) {
         var reqData = {};
         reqData["socket"] = switchId;
         reqData["method"] = value;
-        reqData["device"] = deviceName;
+        reqData["device"] = deviceNames;
         let data = JSON.stringify(reqData);
 
         var xmlHttp = new XMLHttpRequest();
@@ -101,10 +101,10 @@ document.getElementsByName("switch").forEach(function(elem) {
 });
 
 function addhandler() {
-	if (document.getElementById("checkval")) {
-		// Check state of switches and alert as a json string
-		document.getElementById("checkval").addEventListener("click", checkval);
-	}
+    if (document.getElementById("checkval")) {
+        // Check state of switches and alert as a json string
+        document.getElementById("checkval").addEventListener("click", checkval);
+    }
 };
 
 // Update switch state autometically in every 2 sec
@@ -118,7 +118,7 @@ setInterval(function() {
     xmlHttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var myObj = JSON.parse(this.responseText);
-            var jsObj = myObj[deviceName];
+            var jsObj = myObj[deviceNames];
             // Update only when no pending task
             if (pending === 0) {
                 for (var key in jsObj) {

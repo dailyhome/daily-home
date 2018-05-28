@@ -14,9 +14,8 @@ functions:
         alexa_app_id: ""
         # registry_url: http://diot-registry1:9000/
         # TODO: below values will be read from registry based on user
-        device_url: ""
+        device_url: "https://iot-devices.com/mydevice"
         device_name: "mydevice"
-        api_token: "DA1LY-1OT"
 
   # Gateway to handle the UI and API request
   diot-gateway:
@@ -27,7 +26,7 @@ functions:
         gateway_public_url: ""
         # registry_url: http://diot-registry1:9000/
         # TODO: below values will be read from registry based on user
-        device_url: ""
+        device_url: "https://iot-devices.com/mydevice"
         device_name: "mydevice"
         api_token: "DA1LY-1OT"
         username: "admin"

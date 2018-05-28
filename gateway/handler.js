@@ -64,7 +64,10 @@ module.exports = (event, context) => {
         }
     }
 
-    console.log("invalid Request, " + event.headers + event.body);
+    console.log("invalid Request, detailed: ");
+    console.log(event.headers);
+    console.log(event.body);
+
     return context.fail("no Resource Found");
 };
 
@@ -75,7 +78,7 @@ var compiledFunction = null;
 
 function loginPageHandle(context, event) {
     var buildObj = {};
-    
+
     var compiledFunction = pug.compileFile('./function/assets/login.pug');
     // this url is used by the server to send async request
     buildObj['publicUrl'] = process.env.gateway_public_url;
@@ -92,13 +95,15 @@ function loginPageHandle(context, event) {
 
 var pendingDevice = 0;
 var deviceObject = {};
+
 function devDone(context, user, token, device, resp) {
     var deviceProp = {};
 
     try {
-        deviceProp['switches'] = JSON.parse(body);
+        deviceProp['switches'] = JSON.parse(resp);
         deviceProp['state'] = true;
     } catch (error) {
+        console.log("failed to parse device response, " + error.message);
         deviceProp['switches'] = {};
         deviceProp['state'] = false;
     }
@@ -107,7 +112,7 @@ function devDone(context, user, token, device, resp) {
     if (--pendingDevice === 0) {
         deviceObject['publicUrl'] = process.env.gateway_public_url;
         deviceObject['apiToken'] = token;
-	console.log(deviceObject);
+        console.log(deviceObject);
         var resp = compiledFunction({
             source: deviceObject
         });
@@ -230,8 +235,12 @@ function stateRequestHandle(context, event) {
             console.log("failed to request device: " + err);
             return context.fail("failed to request device: " + err);
         }
-        const jsObj = JSON.parse(body);
-        allState[device] = jsObj
+        try {
+            const jsObj = JSON.parse(body);
+            allState[device] = jsObj;
+        } catch (error) {
+            allState[device] = {};
+        }
         let data = JSON.stringify(allState);
         return context
             .status(200)
