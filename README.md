@@ -1,8 +1,11 @@
-# dailyiot
-dailyiot - open IoT platform powered by openfaas targeted easy adaptation
+## DailyIOT
+#### open IoT platform powered by openfaas targeted easy adaptation
 
-!
+## Overview if DailyIOT
 
+> IOT Made Simple
+
+![roadmap](https://farm2.staticflickr.com/1752/28596105478_f4f5afbb66_k.jpg)
 
 ##### TODO
 - [x] API - Implement HTTP API [dailyiot-gateway]
@@ -12,15 +15,15 @@ dailyiot - open IoT platform powered by openfaas targeted easy adaptation
 - [x] UI - Implement Glitchfree Switch Page [dailyiot-gateway]
 - [x] UI - Implement Login Page with Cookie [dailyiot-gateway]
 - [x] UI - Enable and Disable all switches [dailyiot-gateway]
-- [x] UI - Ajax request to update/monitor state [dailyiot-gateway]
-- [ ] Plugin SDK for Writing/Deploying different IOT Skill for both Platform and rasp_ctl (Help Needed)
+- [x] UI - Ajax request to update/monitor state [dailyiot-gateway] 
+- [ ] Create METRIC Service and find a way to Generate useful metrics based on API Request, Like:  
+      - daily/weekly total active period,  
+      - daily/weekly average active period etc
+- [ ] Plugin SDK for Writing/Deploying different IOT Skill for both Platform (gateway, metric & alexa) and rasp_ctl 
 - [ ] Integrate with OpenFaaS-cloud [dailyiot]
 - [ ] Automatic device registration on Startup [dailyiot-gateway] [rasp_ctl]
 - [ ] Optional Automatic ngrok tunnel creation on Startup [rasp_ctl]
 - [ ] Change password and token to secrets [dailyiot]
-- [ ] Generate useful metrics based on API Request, Like:  
-      - daily/weekly total active period,  
-      - daily/weekly average active period etc
 - [ ] UI/API - provide UI and API support to get the metric     
 - [ ] Use minio as storage to keep device info [dailyiot] [dailyiot-gateway]
 - [ ] Custom switch name [dailyiot-gateway]
@@ -28,3 +31,13 @@ dailyiot - open IoT platform powered by openfaas targeted easy adaptation
 - [ ] Write Documentation [dailyiot-gateway] [rasp_ctl]
 - [ ] Find a way to create Routine (without Alexa) [dailyiot]
 - [ ] Device Setup via Wifi Hotspot like Alexa (Help Needed) 
+
+## Overview Of Current Work
+
+> Login Page
+
+![login](https://farm1.staticflickr.com/897/41565051815_a44470fb4e_h.jpg)
+
+> Switching Device
+
+![Switching Device](https://farm2.staticflickr.com/1760/42467480791_c831254071_b.jpg)
