@@ -3,7 +3,11 @@
 
 ## Overview if DailyIOT
 > IOT Made Simple
-   
+
+    DailyIOT platform make use of OpenFaaS for its core
+    Gateway : Handle UI and API call
+    ALEXA : Handle Alexa Request
+    Metric : Compute Mrtrics and Handle Metrics Request
     
 > DailyIOT platform Stack 
 
@@ -12,6 +16,9 @@
 </p>
 
 > DailyIOT Device Stack
+
+    Device platform use swarm for its core
+    Skills : Handle Skill Specific Call (run in a priiviledged mode)
 
 <p align="center">
    <img src="https://farm2.staticflickr.com/1750/42468785871_f50f33d489_b.jpg">
