@@ -25,7 +25,7 @@
     Skills : Handle Skill Specific Call (run in a priiviledged mode)
 
 <p align="center">
-   <img src="https://farm2.staticflickr.com/1750/42468785871_f50f33d489_b.jpg">
+   <img src="https://farm1.staticflickr.com/874/27599461467_109cf59435_o.jpg">
 </p>
 
 
