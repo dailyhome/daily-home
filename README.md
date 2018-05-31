@@ -1,6 +1,9 @@
 # dailyiot
 dailyiot - open IoT platform powered by openfaas targeted easy adaptation
 
+!
+
+
 ##### TODO
 - [x] API - Implement HTTP API [dailyiot-gateway]
 - [x] Implement Alexa skill [dailyiot-alexa]
@@ -10,6 +13,7 @@ dailyiot - open IoT platform powered by openfaas targeted easy adaptation
 - [x] UI - Implement Login Page with Cookie [dailyiot-gateway]
 - [x] UI - Enable and Disable all switches [dailyiot-gateway]
 - [x] UI - Ajax request to update/monitor state [dailyiot-gateway]
+- [ ] Plugin SDK for Writing/Deploying different IOT Skill for both Platform and rasp_ctl (Help Needed)
 - [ ] Integrate with OpenFaaS-cloud [dailyiot]
 - [ ] Automatic device registration on Startup [dailyiot-gateway] [rasp_ctl]
 - [ ] Optional Automatic ngrok tunnel creation on Startup [rasp_ctl]
@@ -23,5 +27,4 @@ dailyiot - open IoT platform powered by openfaas targeted easy adaptation
 - [ ] UI - Multiple Device Layout [dailyiot-gateway]
 - [ ] Write Documentation [dailyiot-gateway] [rasp_ctl]
 - [ ] Find a way to create Routine (without Alexa) [dailyiot]
-- [ ] Device Setup via Wifi Hotspot like Alexa (Help Needed)
-- [ ] Plugin SDK for handling different Module (Help Needed) 
+- [ ] Device Setup via Wifi Hotspot like Alexa (Help Needed) 
