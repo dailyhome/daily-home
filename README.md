@@ -9,6 +9,10 @@
     ALEXA : Handle Alexa Request
     Metric : Compute Mrtrics and Handle Metrics Request
     
+    MINIO: Store Device Info, Skill Definiton 
+    PROMETHEUS: Store Metrics
+    
+    
 > DailyIOT platform Stack 
 
 <p align="center">
@@ -52,7 +56,7 @@
 
 ## Overview Of Current Work
 
-> Login Page
+> Login Page (admin)
 
 ![login](https://farm1.staticflickr.com/897/41565051815_a44470fb4e_h.jpg)
 
