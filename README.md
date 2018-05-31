@@ -11,8 +11,9 @@
 
 > DailyIOT Device Stack
 
-![Device Stack](https://farm2.staticflickr.com/1739/27598045077_fa4e1afd11_b.jpg)
-
+<p align="center">
+   <img src="https://farm2.staticflickr.com/1750/42468785871_f50f33d489_b.jpg">
+</p>
 
 
 ##### TODO
