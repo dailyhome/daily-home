@@ -19,7 +19,8 @@
  <img src="https://farm1.staticflickr.com/878/42418140712_a6402f1b3f_b.jpg">
 </p>
 
-> DailyIOT Device Stack
+> DailyIOT Device Stack 
+https://github.com/s8sg/daily_iot/tree/master/rasp/relay_ctl
 
     Device platform use swarm for its core
     Skills : Handle Skill Specific Call (run in a priiviledged mode)
