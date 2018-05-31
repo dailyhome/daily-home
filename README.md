@@ -27,7 +27,7 @@
 - [ ] Create METRIC Service and find a way to Generate useful metrics based on API Request, Like:  
       - daily/weekly total active period,  
       - daily/weekly average active period etc
-- [ ] Plugin SDK for Writing/Deploying different IOT Skill for both Platform (gateway, metric & alexa) and rasp_ctl 
+- [ ] Template and SDK for Writing different IOT Skill for both Platform (gateway, metric & alexa) and rasp_ctl
 - [ ] Integrate with OpenFaaS-cloud [dailyiot]
 - [ ] Automatic device registration on Startup [dailyiot-gateway] [rasp_ctl]
 - [ ] Optional Automatic ngrok tunnel creation on Startup [rasp_ctl]
