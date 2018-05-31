@@ -7,7 +7,9 @@
     
 > DailyIOT platform Stack 
 
-![Platform Stack](https://farm1.staticflickr.com/886/42417890132_50ae4d91e7_b.jpg)
+<p align="center">
+ <img src="https://farm1.staticflickr.com/878/42418140712_a6402f1b3f_b.jpg">
+</p>
 
 > DailyIOT Device Stack
 
