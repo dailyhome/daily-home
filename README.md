@@ -11,6 +11,7 @@ dailyiot - open IoT platform powered by openfaas targeted easy adaptation
 - [x] UI - Enable and Disable all
 - [x] UI - Ajax request to update/monitor state
 - [ ] Automatic device registration on Startup [dailyiot-gateway] [rasp_ctl]
+- [ ] Optional Automatic ngrok tunnel creation on Startup [rasp_ctl]
 - [ ] Change password and token to secrets [dailyiot]
 - [ ] Use minio as storage to keep device info [dailyiot-gateway]
 - [ ] Custom switch name [dailyiot-gateway]
