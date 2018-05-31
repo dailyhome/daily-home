@@ -2,10 +2,18 @@
 #### open IoT platform powered by openfaas targeted easy adaptation
 
 ## Overview if DailyIOT
-
 > IOT Made Simple
+   
+    
+> DailyIOT platform Stack 
 
-![roadmap](https://farm2.staticflickr.com/1752/28596105478_f4f5afbb66_k.jpg)
+![Platform Stack](https://farm1.staticflickr.com/886/42417890132_50ae4d91e7_b.jpg)
+
+> DailyIOT Device Stack
+
+![Device Stack](https://farm2.staticflickr.com/1739/27598045077_fa4e1afd11_b.jpg)
+
+
 
 ##### TODO
 - [x] API - Implement HTTP API [dailyiot-gateway]
