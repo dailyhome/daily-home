@@ -8,6 +8,7 @@
     Gateway : Handle UI and API call
     ALEXA : Handle Alexa Request
     Metric : Compute Mrtrics and Handle Metrics Request
+    APPS : User Defined Apps as Function 
     
     MINIO: Store Device Info, Skill Definiton 
     PROMETHEUS: Store Metrics
@@ -16,17 +17,19 @@
 > DailyIOT platform Stack 
 
 <p align="center">
- <img src="https://farm1.staticflickr.com/878/42418140712_a6402f1b3f_b.jpg">
+ <img src="https://farm2.staticflickr.com/1735/42496772422_bd9381a9d7_o.jpg">
 </p>
 
 > DailyIOT Device Stack 
 https://github.com/s8sg/daily_iot/tree/master/rasp/relay_ctl
 
     Device platform use swarm for its core
+    FaasSwarm: Manage skill dynamically
+    DeviceGateway: Lightweight and fast http router
     Skills : Handle Skill Specific Call (run in a priiviledged mode)
 
 <p align="center">
-   <img src="https://farm1.staticflickr.com/874/27599461467_109cf59435_o.jpg">
+   <img src="https://farm2.staticflickr.com/1756/40740438330_b4efa720db_o.jpg">
 </p>
 
 
