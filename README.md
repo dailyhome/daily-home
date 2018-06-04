@@ -1,7 +1,7 @@
 ## DailyIOT
 #### open IoT platform powered by openfaas targeted easy adaptation
 
-## Overview if DailyIOT
+## Overview of DailyIOT
 > IOT Made Simple
 
     DailyIOT platform make use of OpenFaaS for its core
@@ -20,23 +20,12 @@
  <img src="https://farm2.staticflickr.com/1735/42496772422_bd9381a9d7_o.jpg">
 </p>
 
-> DailyIOT Device Stack 
-https://github.com/s8sg/daily_iot/tree/master/rasp/relay_ctl
 
-    Device platform use swarm for its core
-    FaasSwarm: Manage skill dynamically
-    DeviceGateway: Lightweight and fast http router
-    Skills : Handle Skill Specific Call (run in a priiviledged mode)
-
-<p align="center">
-   <img src="https://farm2.staticflickr.com/1756/40740438330_b4efa720db_o.jpg">
-</p>
 
 
 ##### TODO
 - [x] API - Implement HTTP API [dailyiot-gateway]
 - [x] Implement Alexa skill [dailyiot-alexa]
-- [X] Implement HTTP Server at RaspberryPi as rasp_ctl [rasp_ctl]
 - [x] API - Authtoken validation [dailyiot-gateway]
 - [x] UI - Implement Glitchfree Switch Page [dailyiot-gateway]
 - [x] UI - Implement Login Page with Cookie [dailyiot-gateway]
@@ -45,18 +34,15 @@ https://github.com/s8sg/daily_iot/tree/master/rasp/relay_ctl
 - [ ] Create METRIC Service and find a way to Generate useful metrics based on API Request, Like:  
       - daily/weekly total active period,  
       - daily/weekly average active period etc
-- [ ] Template and SDK for Writing different IOT Skill for both Platform (gateway, metric & alexa) and rasp_ctl
-- [ ] Integrate with OpenFaaS-cloud [dailyiot]
-- [ ] Automatic device registration on Startup [dailyiot-gateway] [rasp_ctl]
-- [ ] Optional Automatic ngrok tunnel creation on Startup [rasp_ctl]
-- [ ] Change password and token to secrets [dailyiot]
-- [ ] UI/API - provide UI and API support to get the metric     
-- [ ] Use minio as storage to keep device info [dailyiot] [dailyiot-gateway]
+- [ ] Template and SDK for Writing different IOT APP to run on the Platform (gateway, metric & alexa)
+- [ ] Integrate with OpenFaaS-cloud
+- [ ] Change password and token to secrets
+- [ ] UI/API - provide UI and API support to get the metric [dailyiot-gateway]   
+- [ ] Use minio as storage to keep device info [dailyiot-gateway]
 - [ ] Custom switch name [dailyiot-gateway]
 - [ ] UI - Multiple Device Layout [dailyiot-gateway]
-- [ ] Write Documentation [dailyiot-gateway] [rasp_ctl]
-- [ ] Find a way to create Routine (without Alexa) [dailyiot]
-- [ ] Device Setup via Wifi Hotspot like Alexa (Help Needed) 
+- [ ] Write Documentation [dailyiot-gateway]
+- [ ] Find a way to create Routine (without Alexa)
 
 ## Overview Of Current Work
 
