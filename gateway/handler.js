@@ -58,6 +58,11 @@ module.exports = (event, context) => {
                 return stateRequestHandle(context, event);
             }
 
+            // DEVICE Register
+            if (event.body.method == "register") {
+                return registerRequestHandle(context, event);
+            }
+
         } else {
             console.log("invalid API token provided, " + event.headers.token);
             return context.fail("no Resource Found");
@@ -111,7 +116,7 @@ function profilePageHandle(context, event) {
         console.log("error, invalid device address: rasp_ctl url: " + deviceUrl);
         return context.fail("internal error: invalid deviceUrl");
     }
-    deviceUrl = deviceUrl + "/state?socket=all";
+    deviceUrl = deviceUrl + "skill/switch/state/all";
     const req = {
         uri: deviceUrl,
     };
@@ -175,7 +180,7 @@ function socketRequestHandle(context, event) {
         console.log("error, invalid device address: rasp_ctl url: " + deviceUrl);
         return context.fail("internal error: invalid deviceUrl");
     }
-    deviceUrl = deviceUrl + "/" + event.body.method + "?socket=" + event.body.socket;
+    deviceUrl = deviceUrl + "skill/switch/" + event.body.method + "/" + event.body.socket;
     const req = {
         uri: deviceUrl,
     };
@@ -214,7 +219,7 @@ function stateRequestHandle(context, event) {
         console.log("error, invalid device address: rasp_ctl url: " + deviceUrl);
         return context.fail("internal error: invalid deviceUrl");
     }
-    deviceUrl = deviceUrl + "/state";
+    deviceUrl = deviceUrl + "skill/switch/state/all";
     const req = {
         uri: deviceUrl,
     };
@@ -237,4 +242,19 @@ function stateRequestHandle(context, event) {
             })
             .succeed(data);
     });
+};
+
+function registerRequestHandle(context, event) {
+
+    deviceid = event.body.deviceid;
+    skills = event.body.skills;
+    deviceaddr = event.body.deviceaddr;
+
+    // Get device address
+    context
+        .status(200)
+        .headers({
+            "Content-Type": jsonContent
+        })
+        .succeed("");
 };
