@@ -1,9 +1,9 @@
-version: "3"
+version: "3.3"
 
 services:
    diot-registry1:
         ports:
-             - 9000:9000
+             - 9101:9000
         image: minio/minio
         networks:
              - func_functions
@@ -21,7 +21,7 @@ services:
 
    diot-registry2:
         ports:
-             - 9000:9000
+             - 9102:9000
         image: minio/minio
         networks:
              - func_functions
@@ -39,7 +39,7 @@ services:
 
    diot-registry3:
         ports:
-             - 9000:9000
+             - 9103:9000
         image: minio/minio
         networks:
              - func_functions
@@ -57,7 +57,7 @@ services:
 
    diot-registry4:
         ports:
-             - 9000:9000
+             - 9104:9000
         image: minio/minio
         networks:
              - func_functions
@@ -73,8 +73,13 @@ services:
                   window: 60s
         command: server http://diot-registry1/export http://diot-registry2/export http://diot-registry3/export http://diot-registry4/export
 
-volumes:
-     /mnt/data1:
-     /mnt/data2:
-     /mnt/data3:
-     /mnt/data4:
+        #volumes:
+        #     /mnt/data1:
+        #     /mnt/data2:
+        #     /mnt/data3:
+        #     /mnt/data4:
+
+networks:
+    func_functions:
+        external:
+            name: func_functions
