@@ -23,8 +23,8 @@ function getServer() {
         var protocol = location.protocol;
         var slashes = protocol.concat("//");
         server = slashes.concat(window.location.hostname);
+    	server = server.concat("/function/diot-gateway");
     }
-    server = server.concat("/function/diot-gateway");
     return server;
 };
 

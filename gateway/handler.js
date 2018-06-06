@@ -86,7 +86,7 @@ function loginPageHandle(context, event) {
 
     var compiledFunction = pug.compileFile('./function/assets/login.pug');
     // this url is used by the server to send async request
-    buildObj['publicUrl'] = process.env.gateway_public_url;
+    buildObj['publicUrl'] = process.env.gateway_public_uri;
     var resp = compiledFunction({
         source: buildObj
     });
@@ -116,9 +116,10 @@ function profilePageHandle(context, event) {
         console.log("error, invalid device address: rasp_ctl url: " + deviceUrl);
         return context.fail("internal error: invalid deviceUrl");
     }
-    deviceUrl = deviceUrl + "skill/switch/state/all";
+    deviceUrl = deviceUrl + "/skill/switch/state/all";
     const req = {
         uri: deviceUrl,
+	timeout: 120, // 2 sec of timeout 
     };
 
     return request.get(req, (err, res, body) => {
@@ -137,7 +138,7 @@ function profilePageHandle(context, event) {
         }
         deviceObject['devices'][device] = deviceProp;
 
-        deviceObject['publicUrl'] = process.env.gateway_public_url;
+        deviceObject['publicUrl'] = process.env.gateway_public_uri;
         deviceObject['apiToken'] = token;
         var resp = compiledFunction({
             source: deviceObject
@@ -180,9 +181,10 @@ function socketRequestHandle(context, event) {
         console.log("error, invalid device address: rasp_ctl url: " + deviceUrl);
         return context.fail("internal error: invalid deviceUrl");
     }
-    deviceUrl = deviceUrl + "skill/switch/" + event.body.method + "/" + event.body.socket;
+    deviceUrl = deviceUrl + "/skill/switch/" + event.body.method + "/" + event.body.socket;
     const req = {
         uri: deviceUrl,
+	timeout: 60, // 1 sec of timeout 
     };
     return request.get(req, (err, res, body) => {
         if (err) {
@@ -219,9 +221,10 @@ function stateRequestHandle(context, event) {
         console.log("error, invalid device address: rasp_ctl url: " + deviceUrl);
         return context.fail("internal error: invalid deviceUrl");
     }
-    deviceUrl = deviceUrl + "skill/switch/state/all";
+    deviceUrl = deviceUrl + "/skill/switch/state/all";
     const req = {
         uri: deviceUrl,
+	timeout: 60, // 1 sec of timeout 
     };
     return request.get(req, (err, res, body) => {
         if (err) {
@@ -246,9 +249,9 @@ function stateRequestHandle(context, event) {
 
 function registerRequestHandle(context, event) {
 
-    deviceid = event.body.deviceid;
-    skills = event.body.skills;
-    deviceaddr = event.body.deviceaddr;
+    var deviceid = event.body.deviceid;
+    var skills = event.body.skills;
+    var deviceaddr = event.body.deviceaddr;
 
     // Get device address
     context
