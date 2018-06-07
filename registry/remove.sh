@@ -1,2 +1,3 @@
 #!/bin/bash
-docker stack rm diot-registry
+docker stack rm registry
+docker network rm consul
