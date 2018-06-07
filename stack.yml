@@ -15,8 +15,6 @@ functions:
         # registry_url: http://diot-registry1:9000/
         # TODO: below values will be read from registry based on user
         device_url: "http://device-gateway:6107"
-        # The map between the devicename and the device ID (device sha)
-        device_name: "mydevice=00F88D2EF5FD6B452FBC9534C6AF5B25E2B950E61E7147D500EC14CC6FBE55D2"
 
   # Gateway to handle the UI and API request
   diot-gateway:
@@ -29,8 +27,6 @@ functions:
         # registry_url: http://diot-registry1:9000/
         # TODO: below values will be read from registry based on user
         device_url: "http://device-gateway:6107"
-        # The map between the devicename and the device ID (device sha)
-        device_name: "mydevice=00F88D2EF5FD6B452FBC9534C6AF5B25E2B950E61E7147D500EC14CC6FBE55D2"
         # The API token that need to be used to authenticate user and used as cookie
         api_token: "Just-because-something-doesnt-do-what-you-planned-it-to-do-doesnt-mean-its-useless"
         # The access key and secret key used for the registry/secrets

@@ -5,7 +5,10 @@ const jsonContent = "application/json"
 const request = require('request');
 const cookie = require('cookie');
 const pug = require('pug');
-
+const path = require('path');
+const consul = require('consul')({
+    host: "registry_consul"
+});
 
 // Main Handle
 module.exports = (event, context) => {
@@ -69,7 +72,7 @@ module.exports = (event, context) => {
         }
     }
 
-    console.log("invalid Request, detailed: ");
+    console.log("invalid Request, detailes: ");
     console.log(event.headers);
     console.log(event.body);
 
@@ -105,51 +108,82 @@ function profilePageHandle(context, event) {
     var token = process.env.api_token;
     var deviceObject = {};
 
-    // total No of device
+    // all devices
     deviceObject['devices'] = {};
 
-    // TODO: For each device {}
-    var device = process.env.device_name;
-    let deviceUrl = process.env.device_url;
+    let deviceAddr = {};
+    var done = false;
 
-    if (!deviceUrl.length) {
-        console.log("error, invalid device address: rasp_ctl url: " + deviceUrl);
-        return context.fail("internal error: invalid deviceUrl");
-    }
-    deviceUrl = deviceUrl + "/skill/switch/state/all";
-    const req = {
-        uri: deviceUrl,
-	timeout: 120, // 2 sec of timeout 
-    };
-
-    return request.get(req, (err, res, body) => {
-        if (err) {
-            console.log("failed to request device: " + err);
-            body = "";
+    consul.kv.keys("diot/devices/", function(derr, result) {
+        if (derr) {
+            console.log("failed to retrive devices info, error: ", derr);
+            return;
         }
-        var deviceProp = {};
-        try {
-            deviceProp['switches'] = JSON.parse(body);
-            deviceProp['state'] = true;
-        } catch (error) {
-            console.log("failed to parse device response, " + error.message);
-            deviceProp['switches'] = {};
-            deviceProp['state'] = false;
-        }
-        deviceObject['devices'][device] = deviceProp;
+	console.log(result);
 
-        deviceObject['publicUrl'] = process.env.gateway_public_uri;
-        deviceObject['apiToken'] = token;
-        var resp = compiledFunction({
-            source: deviceObject
+        result.forEach(function(device) {
+	    var basename = path.basename("/" + device);
+	    console.log(basename);
+            if (basename != "address") {
+                return;
+            }
+            let devicePath = path.dirname("/" + device);
+            let deviceName = devicePath.split(path.sep).pop();
+            consul.kv.get(devicePath + "/address", function(adrerr, result) {
+                if (adrerr) {
+                    console.log("failed to retrive devices address info, error: ", adrerr);
+                    return;
+                }
+                deviceAddr[deviceName] = result.Value;
+            });
         });
-        return context
-            .status(200)
-            .headers({
-                "Content-Type": htmlType
-            })
-            .succeed(resp);
+	
+	done = true;
     });
+
+    while (!done) {}
+
+    console.log(deviceAddr);
+
+    Object.keys(deviceAddr).forEach(function(device) {
+        let deviceUrl = deviceAddr[device];
+        deviceUrl = deviceUrl + "/skill/switch/state/all";
+        const req = {
+            uri: deviceUrl,
+            timeout: 120, // 2 sec of timeout 
+        };
+        request.get(req, (err, res, body) => {
+            if (err) {
+                console.log("failed to request device: " + err);
+                body = "";
+            }
+            var deviceProp = {};
+            try {
+                deviceProp['switches'] = JSON.parse(body);
+                deviceProp['state'] = true;
+            } catch (error) {
+                console.log("failed to parse device response, " + error.message);
+                deviceProp['switches'] = {};
+                deviceProp['state'] = false;
+            }
+            deviceObject['devices'][device] = deviceProp;
+        });
+    });
+
+    deviceObject['publicUrl'] = process.env.gateway_public_uri;
+    deviceObject['apiToken'] = token;
+    console.log(deviceObject);
+
+    var resp = compiledFunction({
+        source: deviceObject
+    });
+
+    return context
+        .status(200)
+        .headers({
+            "Content-Type": htmlType
+        })
+        .succeed(resp);
 };
 
 // API Request Handler:  
@@ -184,7 +218,7 @@ function socketRequestHandle(context, event) {
     deviceUrl = deviceUrl + "/skill/switch/" + event.body.method + "/" + event.body.socket;
     const req = {
         uri: deviceUrl,
-	timeout: 60, // 1 sec of timeout 
+        timeout: 60, // 1 sec of timeout 
     };
     return request.get(req, (err, res, body) => {
         if (err) {
@@ -201,50 +235,73 @@ function socketRequestHandle(context, event) {
 };
 
 function stateRequestHandle(context, event) {
-    let allState = {}
-    let device = "";
+    let allState = {};
+    let deviceAddr = {};
 
     if (event.body.device) {
-        device = event.body.device;
+        consul.kv.get("diot/devices/" + event.body.device + "/address", function(adrerr, result) {
+            if (adrerr) {
+                console.log("failed to retrive devices address info, error: ", adrerr);
+                return;
+            }
+            deviceAddr[event.body.device] = result.Value;
+        });
+    } else {
+        consul.kv.keys("diot/devices/", function(derr, result) {
+            if (derr) {
+                console.log("failed to retrive devices info, error: ", derr);
+                return;
+            }
+            result.forEach(function(device) {
+                if (path.basename(device) != "address") {
+                    return;
+                }
+                let devicePath = path.dirname(device);
+                let deviceName = path.dirname(device).split(path.sep).pop();
+                consul.kv.get(devicePath + "/address", function(adrerr, result) {
+                    if (adrerr) {
+                        console.log("failed to retrive devices address info, error: ", adrerr);
+                        return;
+                    }
+                    deviceAddr[deviceName] = result.Value;
+                });
+            });
+        });
+
     }
 
-    // TODO: We have only one device now
-    //       later it can be changed to an array
-    if (device == "") {
-        device = process.env.device_name;
-    }
+    Object.keys(deviceAddr).forEach(function(device) {
+        let deviceUrl = deviceAddr[device];
+        if (!deviceUrl.length) {
+            console.log("error, invalid device address: rasp_ctl url: " + deviceUrl);
+            return context.fail("internal error: invalid deviceUrl");
+        }
+        deviceUrl = deviceUrl + "/skill/switch/state/all";
+        const req = {
+            uri: deviceUrl,
+            timeout: 60, // 1 sec of timeout 
+        };
 
-    // TODO: If device is not specified get state for all device
-    // TODO: Get mapped deviceURL for device 
-    let deviceUrl = process.env.device_url;
-    if (!deviceUrl.length) {
-        console.log("error, invalid device address: rasp_ctl url: " + deviceUrl);
-        return context.fail("internal error: invalid deviceUrl");
-    }
-    deviceUrl = deviceUrl + "/skill/switch/state/all";
-    const req = {
-        uri: deviceUrl,
-	timeout: 60, // 1 sec of timeout 
-    };
-    return request.get(req, (err, res, body) => {
-        if (err) {
-            console.log("failed to request device: " + err);
-            return context.fail("failed to request device: " + err);
-        }
-        try {
-            const jsObj = JSON.parse(body);
-            allState[device] = jsObj;
-        } catch (error) {
-            allState[device] = {};
-        }
-        let data = JSON.stringify(allState);
-        return context
-            .status(200)
-            .headers({
-                "Content-Type": jsonContent
-            })
-            .succeed(data);
+        return request.get(req, (err, res, body) => {
+            if (err) {
+                console.log("failed to request device, error: " + err);
+            }
+            try {
+                const jsObj = JSON.parse(body);
+                allState[device] = jsObj;
+            } catch (error) {
+                allState[device] = {};
+            }
+        });
     });
+
+    let data = JSON.stringify(allState);
+    return context
+        .status(200)
+        .headers({
+            "Content-Type": jsonContent
+        })
+        .succeed(data);
 };
 
 function registerRequestHandle(context, event) {
@@ -252,6 +309,23 @@ function registerRequestHandle(context, event) {
     var deviceid = event.body.deviceid;
     var skills = event.body.skills;
     var deviceaddr = event.body.deviceaddr;
+
+    let devicepath = "diot/devices/" + deviceid
+
+    consul.kv.set(devicepath + "/skills", skills, function(err, result) {
+        if (err) {
+            console.log("failed to register device skill, error: " + err);
+            return context.fail("failed to register device skill, error: " + err);
+        }
+    });
+
+    consul.kv.set(devicepath + "/address", deviceaddr, function(err, result) {
+        if (err) {
+            console.log("failed to register device address, error: " + err);
+            return context.fail("failed to register device skill, error : " + err);
+        }
+    });
+
 
     // Get device address
     context

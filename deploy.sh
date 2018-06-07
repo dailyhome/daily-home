@@ -6,9 +6,6 @@ if ! [ -x "$(command -v docker)" ]; then
   exit 1
 fi
 
-# Deploying the registry
-(cd registry && ./deploy.sh) 
-
 # Get the additional openfaas template
 echo "Getting Required Template"
 faas-cli template pull https://github.com/alexellis/node8-express-template
