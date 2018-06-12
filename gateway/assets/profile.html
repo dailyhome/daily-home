@@ -1,0 +1,59 @@
+{{ define "profile" }}
+<!doctype html>
+<html lang="en">
+
+ {{ template "profileHeader" }}
+
+ <body>
+
+   <a class="logout" id="logout" href="#">
+	   <h1>DAILY IOT</h1>
+   </a>
+
+   <div class="container">
+       {{ range $Devicename, $Device := .Devices }}
+         <div class="holoform">
+	    <span class="status">
+	       <label for="{{.Devicename}}" >{{.Devicename}}</label>
+	       <span>
+		  {{ if .device.State }}
+		  <input id="{{.Devicename}}" type="checkbox" name="status" checked />
+		  {{else}}
+		  <input id="{{.Devicename}}" type="checkbox" name="status" disabled />
+		  {{end}}
+		  <label data-on="ACTIVE" data-off="DISABLE" unreachable="INACTIVE"/>
+	       </span>
+	    </span>
+           <br>
+           {{ range $Switch, $State := .Device.Values }}
+	   <span class="checkbox">
+		   <label for="{{.Switch}}"> Switch {{.Switch}} </label>
+		   <span>
+		       {{ if eq .State "true" }}
+		       <input id="{{.Switch}}" type="checkbox" name="switch" checked />
+		       {{ else }}
+		       <input id="{{.Switch}}" type="checkbox" name="switch" />
+		       {{ end }}
+		       <label data-on="ON" data-off="OFF"></label>
+		   </span>
+           </span>
+	   {{ end }}
+           <a name="checkval" href="#" class="checkvalue" value="{{ .Devicename }}">Check Values</a>	   
+	 </div>
+       {{ end }}
+   </div>
+
+   {{ template "foot" }}
+
+   <script type="text/javascript">
+	var serverAddr="{{ .PublicURL }}";
+   </script>
+   <script type="text/javascript">
+	var apiToken="{{ .Token }}";
+   </script>
+   <script type="text/javascript" src="diot-gateway?file=profile.js"></script>
+
+ </body>
+
+</html>
+{{ end }}

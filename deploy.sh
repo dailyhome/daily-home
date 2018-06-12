@@ -11,6 +11,10 @@ echo "Getting Required Template"
 faas-cli template pull https://github.com/alexellis/node8-express-template
 
 # Build and deploy 
-echo "Building and Deploying the DailyIOT platform"
+echo "Building the DailyIOT platform"
+docker build -t s8sg/diot-gateway:1.0.0 gateway/
 faas-cli build -f stack.yml
+
+
+echo "deploying functions"
 faas-cli deploy -f stack.yml
