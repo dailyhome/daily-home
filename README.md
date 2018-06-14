@@ -20,7 +20,39 @@
  <img src="https://farm2.staticflickr.com/1735/42496772422_bd9381a9d7_o.jpg">
 </p>
 
+### Getting Started
 
+Daily-iot platform runs completly on top of `openfaas`. To set up openfaas for the link: [Openfaas Getting Started](http://docs.openfaas.com/deployment/)
+  
+#### Clone the repo
+```bash
+git clone https://github.com/dailyiot/dailyiot.git && cd dailyiot
+```
+  
+#### Start the Registry (Consul) 
+Build locally  (optional)
+```bash
+cd registry && ./build.sh
+```
+Deploy
+```bash
+cd registry && ./deploy.sh
+```
+
+#### Deploy the DIot Platform
+```bash
+./deploy.sh
+```
+
+After deployment go to [http://127.0.0.1:8080/function/diot-gateway](http://127.0.0.1:8080/function/diot-gateway)
+
+> Login Page (default: admin/admin)
+
+![login](https://farm1.staticflickr.com/897/41565051815_a44470fb4e_h.jpg)
+
+> Dummy Switching Device
+
+![Switching Device](https://farm2.staticflickr.com/1760/42467480791_c831254071_b.jpg)
 
 
 ##### TODO
@@ -30,7 +62,7 @@
 - [x] UI - Implement Glitchfree Switch Page [dailyiot-gateway]
 - [x] UI - Implement Login Page with Cookie [dailyiot-gateway]
 - [x] UI - Enable and Disable all switches [dailyiot-gateway]
-- [x] UI - Ajax request to update/monitor state [dailyiot-gateway] 
+- [x] UI - Ajax request to update/monitor state [dailyiot-gateway]
 - [ ] Create METRIC Service and find a way to Generate useful metrics based on API Request, Like:  
       - daily/weekly total active period,  
       - daily/weekly average active period etc
@@ -44,12 +76,3 @@
 - [ ] Write Documentation [dailyiot-gateway]
 - [ ] Find a way to create Routine (without Alexa)
 
-## Overview Of Current Work
-
-> Login Page (admin)
-
-![login](https://farm1.staticflickr.com/897/41565051815_a44470fb4e_h.jpg)
-
-> Switching Device
-
-![Switching Device](https://farm2.staticflickr.com/1760/42467480791_c831254071_b.jpg)
