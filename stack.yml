@@ -8,33 +8,30 @@ functions:
   diot-alexa:
     lang: node8-express
     handler: ./alexa
-    image: s8sg/diot-alexa:0.0.1
+    image: s8sg/diot-alexa:1.0.0
     environment:
         # The alexa app id for daily-iot skill
         alexa_app_id: ""
         # registry_url: http://diot-registry1:9000/
         # TODO: below values will be read from registry based on user
         device_url: "http://device-gateway:6107"
-        # The map between the devicename and the device ID (device sha)
-        device_name: "mydevice=00F88D2EF5FD6B452FBC9534C6AF5B25E2B950E61E7147D500EC14CC6FBE55D2"
 
   # Gateway to handle the UI and API request
   diot-gateway:
-    lang: node8-express
+    skip_build: true
+    lang: Dockerfile
     handler: ./gateway
     image: s8sg/diot-gateway:1.0.0
     environment:
+        # The API token that need to be used to authenticate user and used as cookie
+        api_token: "just-because-something-doesnt-do-what-you-planned-it-to-do-doesnt-mean-its-useless"
+        # UI Specific Conf
         # The public URI for your diot gateway (if not specified it will use the serveraddr)
         gateway_public_uri: "http://127.0.0.1:8080/function/diot-gateway"
-        # registry_url: http://diot-registry1:9000/
-        # TODO: below values will be read from registry based on user
-        device_url: "http://device-gateway:6107"
-        # The map between the devicename and the device ID (device sha)
-        device_name: "mydevice=00F88D2EF5FD6B452FBC9534C6AF5B25E2B950E61E7147D500EC14CC6FBE55D2"
-        # The API token that need to be used to authenticate user and used as cookie
-        api_token: "Just-because-something-doesnt-do-what-you-planned-it-to-do-doesnt-mean-its-useless"
         # The access key and secret key used for the registry/secrets
-        registry_access_key: "DAILYIOT"
-        registry_secret_key: "registry-Just-because-something-doesnt-do-what-you-planned-it-to-do-doesnt-mean-its-useless"
         username: "admin"
         password: "admin"
+        # registry conf
+        registry_addr: "registry_consul:8500"
+        registry_user: "admin"
+        registry_pass: "admin"
