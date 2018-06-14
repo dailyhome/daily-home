@@ -17,7 +17,7 @@
 > DailyIOT platform Stack 
 
 <p align="center">
- <img src="https://farm2.staticflickr.com/1735/42496772422_bd9381a9d7_o.jpg">
+ <img src="https://farm1.staticflickr.com/895/27922686117_69fa6b0361_o.jpg">
 </p>
 
 ### Getting Started
