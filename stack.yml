@@ -33,3 +33,5 @@ functions:
         password: "admin"
         # registry conf
         registry_addr: "registry_consul:8500"
+        registry_user: "admin"
+        registry_pass: "admin"

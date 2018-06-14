@@ -11,45 +11,59 @@
    </a>
 
    <div class="container">
-       {{ range $Devicename, $Device := .Devices }}
-         <div class="holoform">
-	    <span class="status">
-	       <label for="{{.Devicename}}" >{{.Devicename}}</label>
-	       <span>
-		  {{ if .device.State }}
-		  <input id="{{.Devicename}}" type="checkbox" name="status" checked />
+
+         {{ range $Devicename, $Device := .Devices }}
+	 <div class="holoform" name="device">
+
+	   <span class="status">
+	      <label for="{{ $Devicename }}" >{{ $Devicename }}</label>
+	      <span>
+		  {{ if $Device.State }}
+		  <input id="{{ $Devicename }}" type="checkbox" name="status" checked />
 		  {{else}}
-		  <input id="{{.Devicename}}" type="checkbox" name="status" disabled />
+		  <input id="{{ $Devicename }}" type="checkbox" name="status" disabled />
 		  {{end}}
 		  <label data-on="ACTIVE" data-off="DISABLE" unreachable="INACTIVE"/>
-	       </span>
-	    </span>
+	      </span>
+	   </span>
            <br>
-           {{ range $Switch, $State := .Device.Values }}
+
+	   <div>
+
+           {{ range $Switch, $State := $Device.Values }}
 	   <span class="checkbox">
-		   <label for="{{.Switch}}"> Switch {{.Switch}} </label>
+		   <label for="{{ $combine := (printf "%v@%v" $Switch $Devicename) }}"> Switch {{ $Switch }} </label>
 		   <span>
-		       {{ if eq .State "true" }}
-		       <input id="{{.Switch}}" type="checkbox" name="switch" checked />
+		       {{ $switchId := (printf "%v@%v" $Switch $Devicename) }}
+		       {{ if $State }}
+		       <input id="{{ $switchId }}" type="checkbox" name="switch" checked />
 		       {{ else }}
-		       <input id="{{.Switch}}" type="checkbox" name="switch" />
+		       <input id="{{ $switchId }}" type="checkbox" name="switch" />
 		       {{ end }}
 		       <label data-on="ON" data-off="OFF"></label>
 		   </span>
            </span>
 	   {{ end }}
-           <a name="checkval" href="#" class="checkvalue" value="{{ .Devicename }}">Check Values</a>	   
+
+	   </div>
+
+
+	   {{ if $Device.State }}
+           <a name="checkval" href="#" class="checkvalue" value="{{ $Devicename }}">Check Values</a>	   
+	   {{end}}
+
 	 </div>
-       {{ end }}
+         {{ end }}
+
    </div>
 
    {{ template "foot" }}
 
    <script type="text/javascript">
-	var serverAddr="{{ .PublicURL }}";
+	var serverAddr={{ .PublicURL }};
    </script>
    <script type="text/javascript">
-	var apiToken="{{ .Token }}";
+	var apiToken={{ .Token }};
    </script>
    <script type="text/javascript" src="diot-gateway?file=profile.js"></script>
 

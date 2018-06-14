@@ -1,16 +1,21 @@
 // A factory function to update status only when there is no pending request
 
-let pending = 0;
+let pending = {};
 
-var taskup = function() {
-    pending++;
+var taskup = function(deviceId) {
+    if (!(deviceId in pending)) {
+        pending[deviceId] = 0;
+    }
+    pending[deviceId]++;
 };
 
-function done(jsObj) {
-    if (--pending === 0) {
+function done(jsObj, deviceId) {
+    if (pending[deviceId]-- === 0) {
+    	console.log("status update")
         if (jsObj) {
-            for (var key in jsObj) {
-                document.getElementById(key).checked = jsObj[key];
+            for (var switchkey in jsObj) {
+                var switchId = switchkey + "@" + deviceId;
+                document.getElementById(switchId).checked = jsObj[switchkey];
             }
         }
     }
@@ -40,7 +45,7 @@ document.getElementById("logout").addEventListener("click", function(event) {
 document.getElementsByName("status").forEach(function(elem) {
     elem.addEventListener("click", function(event) {
         deviceId = elem.getAttribute("id");
-        taskup();
+        taskup(deviceId);
 
         var initialVal = !elem.checked;
         var value = elem.checked ? 'enable' : 'disable';
@@ -61,7 +66,7 @@ document.getElementsByName("status").forEach(function(elem) {
                     console.log("Failed to change device state from : " + (initialVal ? "active" : "disable"));
                 } else {
                     var myObj = JSON.parse(this.responseText);
-                    done(myObj);
+                    done(myObj, deviceId);
                 }
             }
         };
@@ -70,6 +75,14 @@ document.getElementsByName("status").forEach(function(elem) {
         xmlHttp.setRequestHeader('accept', "application/json");
         xmlHttp.setRequestHeader("Content-Type", "application/json");
         xmlHttp.send(data);
+	document.getElementsByName("switch").forEach(function(selem) {
+		var switchId = selem.getAttribute("id");
+		var splits = switchId.split("@");
+        	var deviceName = splits[1];
+		if (deviceName == deviceId) {
+			selem.checked = elem.checked;
+		}
+	});
     });
 });
 
@@ -77,17 +90,21 @@ document.getElementsByName("status").forEach(function(elem) {
 // Check if any switch state has changed
 document.getElementsByName("switch").forEach(function(elem) {
     elem.addEventListener("click", function(event) {
-        switchId = elem.getAttribute("id");
-        taskup();
+        var switchId = elem.getAttribute("id");
+        var splits = switchId.split("@");
+        var switchName = splits[0];
+        var deviceName = splits[1];
+
+        taskup(deviceName);
 
         var initialVal = !elem.checked;
-        var value = elem.checked ? 'enable' : 'disable';
+        var method = elem.checked ? 'enable' : 'disable';
         var url = getServer();
 
         var reqData = {};
-        reqData["value"] = switchId;
-        reqData["method"] = value;
-        reqData["device"] = deviceNames;
+        reqData["value"] = switchName;
+        reqData["method"] = method;
+        reqData["device"] = deviceName;
         let data = JSON.stringify(reqData);
 
         var xmlHttp = new XMLHttpRequest();
@@ -98,9 +115,10 @@ document.getElementsByName("switch").forEach(function(elem) {
                     document.getElementById(switchId).checked = initialVal;
                     console.log("Failed to change switch state from : " + (initialVal ? "enable" : "disable"));
                 } else {
-                    document.getElementById(deviceNames).checked = true;
+                    // Set the device status is enabled
+                    document.getElementById(deviceName).checked = true;
                     var myObj = JSON.parse(this.responseText);
-                    done(myObj);
+                    done(myObj, deviceName);
                 }
             }
         };
@@ -130,7 +148,7 @@ document.getElementsByName("checkval").forEach(function(elem) {
             }
             if (this.readyState == 4 && this.status == 200) {
                 var jsObj = JSON.parse(this.responseText);
-                let data = JSON.stringify(jsObj[deviceNames], null, 4);
+                let data = JSON.stringify(jsObj[elem.value], null, 4);
                 alert(data);
             }
         };
@@ -153,11 +171,19 @@ setInterval(function() {
     xmlHttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var myObj = JSON.parse(this.responseText);
-            var jsObj = myObj[deviceNames];
-            // Update only when no pending task
-            if (pending === 0) {
-                for (var key in jsObj) {
-                    document.getElementById(key).checked = jsObj[key];
+            for (var deviceName in myObj) {
+                var jsObj = myObj[deviceName];
+
+		if (!(deviceName in pending)) {
+			pending[deviceName] = 0;
+		}
+
+                // Update only when no pending task
+                if (pending[deviceName] === 0) {
+                    for (var switchkey in jsObj) {
+                        var switchId = switchkey + "@" + deviceName;
+                        document.getElementById(switchId).checked = jsObj[switchkey];
+                    }
                 }
             }
         } else if (this.readyState == 4 && this.status != 200) {

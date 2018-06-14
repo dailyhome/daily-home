@@ -17,21 +17,32 @@ const (
 	jsonType = "application/json"
 	htmlType = "text/html"
 
-	D_TOKEN    = "just-because-something-doesnt-do-what-you-planned-it-to-do-doesnt-mean-its-useless"
-	D_USER     = "admin"
-	D_PASS     = "admin"
-	D_REGISTRY = "registry_consul:8500"
+	D_TOKEN         = "just-because-something-doesnt-do-what-you-planned-it-to-do-doesnt-mean-its-useless"
+	D_USER          = "admin"
+	D_PASS          = "admin"
+	D_REGISTRY      = "registry_consul:8500"
+	D_REGISTRY_USER = "admin"
+	D_REGISTRY_PASS = "admin"
 )
 
 var (
-	token      = ""
-	username   = ""
-	password   = ""
-	registry   = ""
-	public_uri = ""
+	token         = ""
+	username      = ""
+	password      = ""
+	registry      = ""
+	registry_user = ""
+	registry_pass = ""
+	public_uri    = ""
 
 	consul *consulapi.Client = nil
 	gen    *pagegen.Template = nil
+
+	static_files = map[string]string{
+		"login.js":        "./assets/static/javascript/login.js",
+		"profile.js":      "./assets/static/javascript/profile.js",
+		"login_style.css": "./assets/static/css/login_style.css",
+		"style.css":       "./assets/static/css/style.css",
+	}
 )
 
 // Universal request object type
@@ -48,7 +59,7 @@ type Message struct {
 
 type Device struct {
 	State  bool
-	Values map[string]string
+	Values map[string]interface{}
 }
 
 type HtmlObject struct {
@@ -64,10 +75,12 @@ func initialize() error {
 	public_uri = os.Getenv("gateway_public_uri")
 	token = os.Getenv("api_token")
 	if token == "" {
+		fmt.Printf("using default api-token")
 		token = D_TOKEN
 	}
 	username = os.Getenv("username")
 	if username == "" {
+		fmt.Printf("using default ")
 		username = D_USER
 	}
 	password = os.Getenv("password")
@@ -78,9 +91,19 @@ func initialize() error {
 	if registry == "" {
 		registry = D_REGISTRY
 	}
+	registry_user = os.Getenv("registry_user")
+	if registry_user == "" {
+		registry_user = D_REGISTRY_USER
+	}
+	registry_pass = os.Getenv("registry_pass")
+	if registry_pass == "" {
+		registry_pass = D_REGISTRY_PASS
+	}
 
 	config := consulapi.DefaultConfig()
 	config.Address = registry
+	config.Scheme = "http"
+	config.HttpAuth = &consulapi.HttpBasicAuth{Username: "admin", Password: "admin"}
 	consul, err = consulapi.NewClient(config)
 	if err != nil {
 		return err
@@ -117,22 +140,8 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if file request
 	files, ok := r.URL.Query()["file"]
 	if ok && len(files[0]) > 0 {
-		switch files[0] {
-		case "login.js":
-			sendLoginJs(w, r)
-			return
-		case "profile.js":
-			sendProfileJs(w, r)
-			return
-
-		case "login_style.css":
-			sendLoginCss(w, r)
-			return
-
-		case "style.css":
-			sendProfileCss(w, r)
-			return
-		}
+		sendFile(w, r, files[0])
+		return
 	}
 
 	// Check if UI request
@@ -146,10 +155,10 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		if cookies != nil {
 			provided_token, exists := cookies["diottoken"]
 			if exists && provided_token == token {
-				log.Printf("loading profile page")
 				loginRequest = false
+				log.Printf("loading profile page")
 			} else {
-				log.Printf("invalid token provided, directing to login page")
+				log.Printf("loading login page")
 			}
 		}
 
@@ -180,7 +189,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 
 		method := msg.Method
 
-		log.Printf("requsted method, " + method)
+		log.Printf("requsted method: " + method)
 
 		// LOGIN Request
 		if msg.Method == "login" {
@@ -235,14 +244,14 @@ func registerRequestHandle(w http.ResponseWriter, device string, msg Message) {
 	address := &consulapi.KVPair{Key: devicepath + "/address", Value: []byte(deviceaddr)}
 
 	kv := consul.KV()
-	_, _, err := kv.Acquire(skill, nil)
+	_, err := kv.Put(skill, nil)
 	if err != nil {
 		log.Printf("failed to register device skill, error: " + err.Error())
 		http.Error(w, "{\"error\":\"failed to register device skill, "+err.Error()+"\"}", http.StatusInternalServerError)
 		return
 	}
 
-	_, _, err = kv.Acquire(address, nil)
+	_, err = kv.Put(address, nil)
 	if err != nil {
 		log.Printf("failed to register device address, error: " + err.Error())
 		http.Error(w, "{\"error\":\"failed to register device skill, "+err.Error()+"\"}", http.StatusInternalServerError)
@@ -250,6 +259,8 @@ func registerRequestHandle(w http.ResponseWriter, device string, msg Message) {
 	}
 
 	w.Header().Set("Content-Type", jsonType)
+
+	log.Printf("successfully registered device %s", device)
 }
 
 // Login (username, pass)
@@ -257,7 +268,7 @@ func loginRequestHandle(w http.ResponseWriter, provided_user, provided_pass stri
 
 	// Check if right credential
 	if username == provided_user && password == provided_pass {
-		log.Printf("Login Successfull")
+		log.Printf("successfull login")
 		w.Header().Set("Content-Type", jsonType)
 		w.Header().Set("diotcookie", "diottoken="+token)
 		return
@@ -292,13 +303,20 @@ func skillRequestHandle(w http.ResponseWriter, device, method, value string) {
 	client := &http.Client{}
 	req, _ := http.NewRequest("GET", deviceUrl, nil)
 	req.Header.Add("Content-Type", "application/json")
-	_, reqerr := client.Do(req)
+	resp, reqerr := client.Do(req)
 	if reqerr != nil {
 		log.Printf("failed to request device, error: %v", reqerr)
 		http.Error(w, fmt.Sprintf("failed to request device, error: %v", reqerr), http.StatusInternalServerError)
 		return
 	}
+	body, readerr := ioutil.ReadAll(resp.Body)
+	if readerr != nil {
+		log.Printf("failed to request device %s, error: %v", device, readerr)
+	}
+
 	w.Header().Set("Content-Type", jsonType)
+	w.Write(body)
+	log.Printf("successfull skill request for device %s with method %s and value %s ", device, method, value)
 }
 
 // Device state (:device)
@@ -317,7 +335,6 @@ func statusRequestHandle(w http.ResponseWriter, device string) {
 		}
 		deviceAddress[device] = string(kvPair.Value)
 	} else {
-		// Found devices and their address
 		keys, _, err := kv.Keys("diot/devices/", "/", nil)
 		if err != nil {
 			log.Printf("failed to get device address, error: " + err.Error())
@@ -325,14 +342,8 @@ func statusRequestHandle(w http.ResponseWriter, device string) {
 			return
 		}
 		for _, key := range keys {
-			fmt.Println(key)
-			if filepath.Base(key) != "address" {
-				continue
-			}
-			devicePath := filepath.Dir(key)
-			device := filepath.Base(devicePath)
-
-			kvPair, _, err := kv.Get(devicePath+"/address", nil)
+			device := filepath.Base(key)
+			kvPair, _, err := kv.Get(key+"address", nil)
 			if err != nil {
 				log.Printf("failed to get device address, error: " + err.Error())
 				continue
@@ -341,35 +352,41 @@ func statusRequestHandle(w http.ResponseWriter, device string) {
 		}
 	}
 
-	var allState map[string]interface{}
+	allState := make(map[string]interface{})
 
-	for device, address := range deviceAddress {
+	for deviceName, address := range deviceAddress {
+
+		log.Printf("device %s, device address: %s", deviceName, address)
+
 		deviceUrl := address + "/skill/switch/state/all"
 		client := &http.Client{}
 		req, _ := http.NewRequest("GET", deviceUrl, nil)
 		req.Header.Add("Content-Type", "application/json")
 		resp, reqerr := client.Do(req)
+
 		if reqerr != nil {
-			log.Printf("failed to request device, error: %v", reqerr)
-			allState[device] = "false"
-			continue
-		}
-		body, readerr := ioutil.ReadAll(resp.Body)
-		if readerr != nil {
-			log.Printf("failed to perform device request, error: %v", readerr)
-			allState[device] = "false"
-			continue
-		}
-		var jsObj map[string]interface{}
-		jserr := json.Unmarshal([]byte(body), &jsObj)
-		if jserr != nil {
-			log.Printf("failed to perform device request, error: %v", jserr)
-			allState[device] = "false"
+			log.Printf("failed to request device %s, error: %v", deviceName, reqerr)
 			continue
 		}
 
-		allState[device] = jsObj
+		body, readerr := ioutil.ReadAll(resp.Body)
+		if readerr != nil {
+			log.Printf("failed to request device %s, error: %v", deviceName, readerr)
+			continue
+		}
+
+		var jsObj map[string]interface{}
+		jserr := json.Unmarshal([]byte(body), &jsObj)
+		if jserr != nil {
+			log.Printf("failed to request device %s, error: %v", deviceName, jserr)
+			continue
+		}
+
+		log.Printf("device %s status with properties: %v", deviceName, jsObj)
+
+		allState[deviceName] = jsObj
 	}
+
 	reqBody, merr := json.Marshal(allState)
 	if merr != nil {
 		log.Printf("failed to perform device request, error: %v", merr)
@@ -408,14 +425,8 @@ func profilePageHandle(w http.ResponseWriter) {
 		return
 	}
 	for _, key := range keys {
-		fmt.Println(key)
-		if filepath.Base(key) != "address" {
-			continue
-		}
-		devicePath := filepath.Dir(key)
-		device := filepath.Base(devicePath)
-
-		kvPair, _, err := kv.Get(devicePath+"/address", nil)
+		device := filepath.Base(key)
+		kvPair, _, err := kv.Get(key+"address", nil)
 		if err != nil {
 			log.Printf("failed to get device address, error: " + err.Error())
 			continue
@@ -426,18 +437,24 @@ func profilePageHandle(w http.ResponseWriter) {
 	allState := make(map[string]*Device)
 
 	for deviceName, address := range deviceAddress {
-		device := &Device{}
 
+		log.Printf("device %s, device address: %s", deviceName, address)
+
+		device := &Device{}
 		deviceUrl := address + "/skill/switch/state/all"
 		client := &http.Client{}
 		req, _ := http.NewRequest("GET", deviceUrl, nil)
 		req.Header.Add("Content-Type", "application/json")
 		resp, reqerr := client.Do(req)
+
+		device.State = true
+
 		if reqerr != nil {
 			log.Printf("failed to request device %s, error: %v", deviceName, reqerr)
 			device.State = false
 			continue
 		}
+
 		body, readerr := ioutil.ReadAll(resp.Body)
 		if readerr != nil {
 			log.Printf("failed to request device %s, error: %v", deviceName, readerr)
@@ -445,13 +462,17 @@ func profilePageHandle(w http.ResponseWriter) {
 			continue
 		}
 
-		var jsObj map[string]bool
+		var jsObj map[string]interface{}
 		jserr := json.Unmarshal([]byte(body), &jsObj)
 		if jserr != nil {
 			log.Printf("failed to request device %s, error: %v", deviceName, jserr)
 			device.State = false
 			continue
 		}
+
+		device.Values = jsObj
+
+		log.Printf("device %s loaded with properties: %v", deviceName, device)
 
 		allState[deviceName] = device
 	}
@@ -464,21 +485,14 @@ func profilePageHandle(w http.ResponseWriter) {
 	}
 }
 
-// Static file
-func sendLoginJs(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./assets/static/javascript/login.js")
-}
-
-func sendProfileJs(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./assets/static/javascript/profile.js")
-}
-
-func sendLoginCss(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./assets/static/css/login_style.css")
-}
-
-func sendProfileCss(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./assets/static/css/style.css")
+// Static file request handler
+func sendFile(w http.ResponseWriter, r *http.Request, file string) {
+	filepath, valid := static_files[file]
+	if !valid {
+		http.Error(w, fmt.Sprintf("requested file %s is Invalid", file), http.StatusInternalServerError)
+		return
+	}
+	http.ServeFile(w, r, filepath)
 }
 
 func main() {
@@ -487,6 +501,7 @@ func main() {
 	if err != nil {
 		log.Fatal("failed to initialize the gateway, error: ", err.Error())
 	}
+	log.Printf("successfully initialized gateway")
 
 	http.HandleFunc("/", requestHandler)
 
