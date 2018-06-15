@@ -71,6 +71,11 @@ h1 {
     font-weight: 100;
 }
 
+h1:hover {
+    box-shadow: 0px 0px 1px 0px #000, 1px 1px 22px 5px #3181aa;
+    color: #fff;
+}
+
 .container {
     width: 40%;
     min-width: 320px;
@@ -368,3 +373,92 @@ h1 {
     left: 0;
 }
 
+.rolldown-list {
+  font: 1.2em/1.4 'Oswald', sans-serif;
+  color: #fff;
+  text-align: left;
+  visibility: visible;
+  padding: 0;
+  margin: 0;
+  z-index: 1; position:relative;
+  position: relative;
+  /*width: 50%;
+  left: 50%;
+  margin-left: -25%;*/
+  width: 40%;
+  left: 30%;
+}
+
+.rolldown-list li {
+  padding: 1em;
+  margin-bottom: .125em;
+  display: block;
+  list-style: none;
+  opacity:0.8;
+  text-transform: uppercase;
+  visibility: hidden;
+  transform-origin: 50% 0;
+  animation-fill-mode: forwards;
+}
+
+.rolldown-list li:nth-child(2n) {
+  background-color: #444;
+}
+
+.rolldown-list li:hover:nth-child(2n) {
+  background-color: #379;
+  opacity:0.9;
+}
+
+.rolldown-list li:nth-child(2n+1) {
+  background-color: #222;
+}
+
+.rolldown-list li:hover:nth-child(2n+1) {
+  background-color: #379;
+  opacity:0.9;
+}
+
+.rolldown-list li:last-child {
+  background-color: #f98d11;
+}
+
+.rolldown-list li:hover:last-child {
+  background-color: #387;
+  opacity:0.9;
+}
+
+
+@keyframes rolldown {
+  0% {
+    visibility: visible;
+    opacity:0.2;
+    /*transform: rotateX(180deg) perspective(500px);*/
+  }
+  80% {
+    visibility: visible;
+    opacity:0.7;
+    /*transform: rotateX(-20deg);*/
+  }
+  100% {
+    visibility: visible;
+    opacity:0.8;
+    /*transform: rotateX(0deg);*/
+  }
+}
+
+@keyframes rollup {
+  100% {
+    visibility: hidden;
+    transform: rotateX(0deg);
+  }
+  50% {
+    visibility: hidden;
+    transform: rotateY(-90deg);
+  }
+  0% {
+    visibility: visible;
+    opacity:0.5;
+    transform: rotateY(-60deg) perspective(500px);
+  }
+}

@@ -35,11 +35,82 @@ function getServer() {
     return server;
 };
 
-// Check state of switches as a json string
-document.getElementById("logout").addEventListener("click", function(event) {
-    document.cookie = "diottoken=invalid";
-    document.location.reload();
+
+// Show/Hide Menu Item 
+document.getElementById("menu").addEventListener("click", function(event) {
+    var list = document.getElementById("menuItem");
+    //console.log
+    if (list.style.visibility == 'hidden') {
+          document.getElementsByName("item").forEach(function(elem) {
+            elem.style.animation='rolldown .7s 1';
+            elem.style.visibility='visible';
+          }); 
+	  // Hide the background item
+	  document.getElementsByName("deviceContainer").forEach(function(dc) {
+	    // Only do for current visible item
+	    if (dc.style.visibility == 'visible') {
+            	dc.style.opacity=0.4;
+	    }
+          });
+          list.style.visibility='visible';
+    } else {
+        document.getElementsByName("item").forEach(function(elem) {
+          elem.style.animation='rollup .4s 1';
+          elem.style.visibility='hidden';
+        });
+	// Make the background item visible 
+	document.getElementsByName("deviceContainer").forEach(function(dc) {
+	    // Only do for current visible item
+	    if (dc.style.visibility == 'visible') {
+            	dc.style.opacity=0.95;
+	    }
+        });
+        list.style.visibility='hidden';
+    }
 });
+
+// Menu Item Handler
+document.getElementsByName("item").forEach( function(elem) {
+   var list = document.getElementById("menuItem");
+   elem.style.visibility='hidden';
+   list.style.visibility='hidden';
+   elem.addEventListener("click", function(event) {
+      // Handle Click
+      var value = elem.getAttribute("value");
+      console.log("click on " + value)
+
+      // Hide list
+      document.getElementsByName("item").forEach(function(elem) {
+          elem.style.animation='rollup .5s 1';
+          elem.style.visibility='hidden';
+      });
+      list.style.visibility='hidden';
+
+      // Do value specific Operation
+      if (value == "logout") {
+    	document.cookie = "diottoken=invalid";
+    	document.location.reload();
+      } else {
+          document.getElementsByName("deviceContainer").forEach(function(elem) {
+            elem.style.visibility='hidden';
+          });
+          var containerId = "container@" + value;
+          document.getElementById(containerId).style.visibility='visible';
+	  // Make the selected item visible
+	  document.getElementById(containerId).style.opacity=0.95;
+      }
+   });
+});
+
+// Initially all container are invisible
+document.getElementsByName("deviceContainer").forEach(
+	function(elem) {
+		elem.style.visibility='hidden';
+	}
+);
+
+// Make the First item visible
+document.getElementsByName("deviceContainer")[0].style.visibility='visible';
 
 // Check if any device status has changed
 document.getElementsByName("status").forEach(function(elem) {

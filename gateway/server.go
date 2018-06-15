@@ -49,14 +49,17 @@ var (
 type Message struct {
 	Method string `json:"method"`
 
-	Value      string   `json:"value"`
-	Device     string   `json:"device"`
+	Value  string `json:"value"`
+	Device string `json:"device"`
+
 	DeviceAddr string   `json:"deviceaddr"`
 	Skills     []string `json:"skills"`
-	Username   string   `json:"username"`
-	Password   string   `json:"password"`
+
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
+// Html Render object
 type Device struct {
 	State  bool
 	Values map[string]interface{}

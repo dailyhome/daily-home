@@ -6,13 +6,21 @@
 
  <body>
 
-   <a class="logout" id="logout" href="#">
+   <a class="logout" id="menu" href="#">
 	   <h1>DAILY IOT</h1>
    </a>
 
-   <div class="container">
+   <ul class="rolldown-list" id="menuItem">
+   	   {{ range $Devicename, $Device := .Devices }}
+           <li name="item" value="{{ $Devicename }}">{{ $Devicename }}</li>
+           {{ end }}
+	   <li name="item" value="logout">logout</li>
+   </ul>
 
-         {{ range $Devicename, $Device := .Devices }}
+   {{ range $Devicename, $Device := .Devices }}
+   {{ $containerId := (printf "container@%v" $Devicename) }}
+   <div class="container" name="deviceContainer" id="{{ $containerId }}">
+
 	 <div class="holoform" name="device">
 
 	   <span class="status">
@@ -32,9 +40,9 @@
 
            {{ range $Switch, $State := $Device.Values }}
 	   <span class="checkbox">
-		   <label for="{{ $combine := (printf "%v@%v" $Switch $Devicename) }}"> Switch {{ $Switch }} </label>
+		   {{ $switchId := (printf "%v@%v" $Switch $Devicename) }}
+		   <label for="{{ $switchId }}"> Switch {{ $Switch }} </label>
 		   <span>
-		       {{ $switchId := (printf "%v@%v" $Switch $Devicename) }}
 		       {{ if $State }}
 		       <input id="{{ $switchId }}" type="checkbox" name="switch" checked />
 		       {{ else }}
@@ -53,9 +61,8 @@
 	   {{end}}
 
 	 </div>
-         {{ end }}
-
    </div>
+   {{ end }}
 
    {{ template "foot" }}
 
