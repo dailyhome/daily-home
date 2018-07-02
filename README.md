@@ -76,3 +76,10 @@ After deployment go to [http://127.0.0.1:8080/function/diot-gateway](http://127.
 - [ ] Write Documentation [dailyiot-gateway]
 - [ ] Find a way to create Routine (without Alexa)
 
+
+## Contribution guide
+A Contribution can be in any form of a `Suggestion/Idea/PR (Implementation/Documentation)/Review`   
+To open an suggestion, Idea or Issue please create an issue at:   
+[https://github.com/dailyiot/dailyiot/issues](https://github.com/dailyiot/dailyiot/issues)   
+For a PR please create an issue detailing the Idea/Suggestion/Issue  
+
