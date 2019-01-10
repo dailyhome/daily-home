@@ -26,7 +26,7 @@ Daily-home platform runs completly on top of `openfaas`. To set up openfaas for 
   
 #### Clone the repo
 ```bash
-git clone https://github.com/dailyiot/daily-home.git && cd daily-home
+git clone https://github.com/dailyhome/daily-home.git && cd daily-home
 ```
   
 #### Start the Registry (Consul) 
