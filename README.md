@@ -1,10 +1,10 @@
-## DailyIOT
-#### open IoT platform powered by openfaas targeted easy adaptation
+## DailyHOME
+#### open home automation platform powered by openfaas targeted easy adaptation
 
-## Overview of DailyIOT
-> IOT Made Simple
+## Overview of DailyHOME
+> HOME automation Made Simple
 
-    DailyIOT platform make use of OpenFaaS for its core
+    DailyHOME platform make use of OpenFaaS for its core
     Gateway : Handle UI and API call
     ALEXA : Handle Alexa Request
     Metric : Compute Mrtrics and Handle Metrics Request
@@ -22,11 +22,11 @@
 
 ### Getting Started
 
-Daily-iot platform runs completly on top of `openfaas`. To set up openfaas for the link: [Openfaas Getting Started](http://docs.openfaas.com/deployment/)
+Daily-home platform runs completly on top of `openfaas`. To set up openfaas for the link: [Openfaas Getting Started](http://docs.openfaas.com/deployment/)
   
 #### Clone the repo
 ```bash
-git clone https://github.com/dailyiot/dailyiot.git && cd dailyiot
+git clone https://github.com/dailyiot/daily-home.git && cd daily-home
 ```
   
 #### Start the Registry (Consul) 
