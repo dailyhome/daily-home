@@ -80,6 +80,6 @@ After deployment go to [http://127.0.0.1:8080/function/diot-gateway](http://127.
 ## Contribution guide
 A Contribution can be in any form of a `Suggestion/Idea/PR (Implementation/Documentation)/Review`   
 To open an suggestion, Idea or Issue please create an issue at:   
-[https://github.com/dailyiot/dailyiot/issues](https://github.com/dailyiot/dailyiot/issues)   
+[https://github.com/dailyhome/daily-home/issues](https://github.com/dailyhome/daily-home/issues)   
 For a PR please create an issue detailing the Idea/Suggestion/Issue  
 
