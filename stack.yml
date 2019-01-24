@@ -4,34 +4,33 @@ provider:
 
 functions:
 
-  # Alexa skill to handle daily-iot alexa skill request
-  diot-alexa:
+  # Alexa skill to handle daily-home alexa skill request
+  dhome-alexa:
     lang: node8-express
     handler: ./alexa
-    image: s8sg/diot-alexa:1.0.0
+    image: s8sg/dhome-alexa:1.0.0
     environment:
-        # The alexa app id for daily-iot skill
+        # The alexa app id for daily-home skill
         alexa_app_id: ""
-        # registry_url: http://diot-registry1:9000/
+        # registry_url: http://dhome-registry1:9000/
         # TODO: below values will be read from registry based on user
         device_url: "http://device-gateway:6107"
 
   # Gateway to handle the UI and API request
-  diot-gateway:
+  dhome-gateway:
     skip_build: true
     lang: Dockerfile
     handler: ./gateway
-    image: s8sg/diot-gateway:1.0.0
+    image: s8sg/dhome-gateway:1.0.0
     environment:
         # The API token that need to be used to authenticate user and used as cookie
         api_token: "just-because-something-doesnt-do-what-you-planned-it-to-do-doesnt-mean-its-useless"
         # UI Specific Conf
-        # The public URI for your diot gateway (if not specified it will use the serveraddr)
-        gateway_public_uri: "http://127.0.0.1:8080/function/diot-gateway"
+        # The public URI for your dhome gateway (if not specified it will use the serveraddr)
+        gateway_public_uri: "http://127.0.0.1:8080/function/dhome-gateway"
         # The access key and secret key used for the registry/secrets
         username: "admin"
         password: "admin"
         # registry conf
-        registry_addr: "registry_consul:8500"
-        registry_user: "admin"
-        registry_pass: "admin"
+        CONSUL_ADDRESS: "statestore_consul:8500"
+        CONSUL_DC: "dc1"

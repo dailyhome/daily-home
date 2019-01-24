@@ -44,7 +44,7 @@ cd registry && ./deploy.sh
 ./deploy.sh
 ```
 
-After deployment go to [http://127.0.0.1:8080/function/diot-gateway](http://127.0.0.1:8080/function/diot-gateway)
+After deployment go to [http://127.0.0.1:8080/function/dhome-gateway](http://127.0.0.1:8080/function/dhome-gateway)
 
 > Login Page (default: admin/admin)
 
@@ -56,24 +56,24 @@ After deployment go to [http://127.0.0.1:8080/function/diot-gateway](http://127.
 
 
 ##### TODO
-- [x] API - Implement HTTP API [dailyiot-gateway]
-- [x] Implement Alexa skill [dailyiot-alexa]
-- [x] API - Authtoken validation [dailyiot-gateway]
-- [x] UI - Implement Glitchfree Switch Page [dailyiot-gateway]
-- [x] UI - Implement Login Page with Cookie [dailyiot-gateway]
-- [x] UI - Enable and Disable all switches [dailyiot-gateway]
-- [x] UI - Ajax request to update/monitor state [dailyiot-gateway]
+- [x] API - Implement HTTP API [dailyhome-gateway]
+- [x] Implement Alexa skill [dailyhome-alexa]
+- [x] API - Authtoken validation [dailyhome-gateway]
+- [x] UI - Implement Glitchfree Switch Page [dailyhome-gateway]
+- [x] UI - Implement Login Page with Cookie [dailyhome-gateway]
+- [x] UI - Enable and Disable all switches [dailyhome-gateway]
+- [x] UI - Ajax request to update/monitor state [dailyhome-gateway]
 - [ ] Create METRIC Service and find a way to Generate useful metrics based on API Request, Like:  
       - daily/weekly total active period,  
       - daily/weekly average active period etc
 - [ ] Template and SDK for Writing different IOT APP to run on the Platform (gateway, metric & alexa)
 - [ ] Integrate with OpenFaaS-cloud
 - [ ] Change password and token to secrets
-- [ ] UI/API - provide UI and API support to get the metric [dailyiot-gateway]   
-- [ ] Use minio as storage to keep device info [dailyiot-gateway]
-- [ ] Custom switch name [dailyiot-gateway]
-- [ ] UI - Multiple Device Layout [dailyiot-gateway]
-- [ ] Write Documentation [dailyiot-gateway]
+- [ ] UI/API - provide UI and API support to get the metric [dailyhome-gateway]   
+- [ ] Use minio as storage to keep device info [dailyhome-gateway]
+- [ ] Custom switch name [dailyhome-gateway]
+- [ ] UI - Multiple Device Layout [dailyhome-gateway]
+- [ ] Write Documentation [dailyhome-gateway]
 - [ ] Find a way to create Routine (without Alexa)
 
 

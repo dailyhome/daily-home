@@ -1,5 +1,5 @@
 #!/bin/bash
 
 # Build and deploy
-docker service rm diot-alexa
-docker service rm diot-gateway
+docker service rm dhome-alexa
+docker service rm dhome-gateway

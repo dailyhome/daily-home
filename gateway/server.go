@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -26,16 +27,15 @@ const (
 )
 
 var (
-	token         = ""
-	username      = ""
-	password      = ""
-	registry      = ""
-	registry_user = ""
-	registry_pass = ""
-	public_uri    = ""
+	token      = ""
+	username   = ""
+	password   = ""
+	endpoint   = ""
+	public_uri = ""
 
-	consul *consulapi.Client = nil
-	gen    *pagegen.Template = nil
+	consulClient *consulapi.Client = nil
+	kv           *consulapi.KV     = nil
+	gen          *pagegen.Template = nil
 
 	static_files = map[string]string{
 		"login.js":        "./assets/static/javascript/login.js",
@@ -73,7 +73,6 @@ type HtmlObject struct {
 
 // initialize globals
 func initialize() error {
-	var err error
 
 	public_uri = os.Getenv("gateway_public_uri")
 	token = os.Getenv("api_token")
@@ -83,36 +82,65 @@ func initialize() error {
 	}
 	username = os.Getenv("username")
 	if username == "" {
-		fmt.Printf("using default ")
+		fmt.Printf("using default username")
 		username = D_USER
 	}
 	password = os.Getenv("password")
 	if password == "" {
+		fmt.Printf("using default password")
 		password = D_PASS
 	}
-	registry = os.Getenv("registry_addr")
-	if registry == "" {
-		registry = D_REGISTRY
-	}
-	registry_user = os.Getenv("registry_user")
-	if registry_user == "" {
-		registry_user = D_REGISTRY_USER
-	}
-	registry_pass = os.Getenv("registry_pass")
-	if registry_pass == "" {
-		registry_pass = D_REGISTRY_PASS
-	}
+	endpoint = os.Getenv("registry_endpoint")
 
-	config := consulapi.DefaultConfig()
-	config.Address = registry
-	config.Scheme = "http"
-	config.HttpAuth = &consulapi.HttpBasicAuth{Username: "admin", Password: "admin"}
-	consul, err = consulapi.NewClient(config)
-	if err != nil {
-		return err
+	connectErr := connectToConsul(endpoint)
+	if connectErr != nil {
+		log.Printf("Consul connection error %s\n", connectErr.Error())
+		return connectErr
 	}
 
 	gen = pagegen.Must(pagegen.ParseGlob("assets/*.html"))
+	return nil
+}
+
+// readSecret reads a secret from /var/openfaas/secrets or from
+// env-var 'secret_mount_path' if set.
+func readSecret(key string) (string, error) {
+	basePath := "/var/openfaas/secrets/"
+	if len(os.Getenv("secret_mount_path")) > 0 {
+		basePath = os.Getenv("secret_mount_path")
+	}
+
+	readPath := path.Join(basePath, key)
+	secretBytes, readErr := ioutil.ReadFile(readPath)
+	if readErr != nil {
+		return "", fmt.Errorf("unable to read secret: %s, error: %s", readPath, readErr)
+	}
+	val := strings.TrimSpace(string(secretBytes))
+	return val, nil
+}
+
+func connectToConsul(endpoint string) error {
+
+	var err error
+
+	config := consulapi.DefaultConfig()
+	address := os.Getenv("CONSUL_ADDRESS")
+	if address == "" {
+		address = "consul:8500"
+	}
+	datacenter := os.Getenv("CONSUL_DC")
+	if datacenter == "" {
+		datacenter = "dc1"
+	}
+	config.Address = address
+	config.Datacenter = datacenter
+
+	consulClient, err = consulapi.NewClient(config)
+	if err != nil {
+		return err
+	}
+	kv = consulClient.KV()
+
 	return nil
 }
 
@@ -143,7 +171,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if file request
 	files, ok := r.URL.Query()["file"]
 	if ok && len(files[0]) > 0 {
-		sendFile(w, r, files[0])
+		serveFile(w, r, files[0])
 		return
 	}
 
@@ -156,7 +184,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 
 		// if cookie exist check value
 		if cookies != nil {
-			provided_token, exists := cookies["diottoken"]
+			provided_token, exists := cookies["dhometoken"]
 			if exists && provided_token == token {
 				loginRequest = false
 				log.Printf("loading profile page")
@@ -240,13 +268,12 @@ func registerRequestHandle(w http.ResponseWriter, device string, msg Message) {
 	skills := msg.Skills
 	deviceaddr := msg.DeviceAddr
 
-	devicepath := "diot/devices/" + device
+	devicepath := "dhome/devices/" + device
 
 	skillList, _ := json.Marshal(&skills)
 	skill := &consulapi.KVPair{Key: devicepath + "/skills", Value: []byte(skillList)}
 	address := &consulapi.KVPair{Key: devicepath + "/address", Value: []byte(deviceaddr)}
 
-	kv := consul.KV()
 	_, err := kv.Put(skill, nil)
 	if err != nil {
 		log.Printf("failed to register device skill, error: " + err.Error())
@@ -273,7 +300,7 @@ func loginRequestHandle(w http.ResponseWriter, provided_user, provided_pass stri
 	if username == provided_user && password == provided_pass {
 		log.Printf("successfull login")
 		w.Header().Set("Content-Type", jsonType)
-		w.Header().Set("diotcookie", "diottoken="+token)
+		w.Header().Set("dhomecookie", "dhometoken="+token)
 		return
 	}
 	w.Header().Set("Content-Type", jsonType)
@@ -285,8 +312,7 @@ func loginRequestHandle(w http.ResponseWriter, provided_user, provided_pass stri
 // Skill (device, method, value)
 func skillRequestHandle(w http.ResponseWriter, device, method, value string) {
 
-	kv := consul.KV()
-	devicepath := "diot/devices/" + device
+	devicepath := "dhome/devices/" + device
 	kvPair, _, err := kv.Get(devicepath+"/address", nil)
 	if err != nil {
 		log.Printf("failed to get device address, error: " + err.Error())
@@ -325,12 +351,11 @@ func skillRequestHandle(w http.ResponseWriter, device, method, value string) {
 // Device state (:device)
 func statusRequestHandle(w http.ResponseWriter, device string) {
 
-	kv := consul.KV()
 	deviceAddress := make(map[string]string)
 
 	if device != "" {
 		// Get specified device address
-		kvPair, _, err := kv.Get("diot/devices/"+device+"/address", nil)
+		kvPair, _, err := kv.Get("dhome/devices/"+device+"/address", nil)
 		if err != nil {
 			log.Printf("failed to get device address, error: " + err.Error())
 			http.Error(w, "{\"error\":\"failed to get device address, "+err.Error()+"\"}", http.StatusInternalServerError)
@@ -338,7 +363,7 @@ func statusRequestHandle(w http.ResponseWriter, device string) {
 		}
 		deviceAddress[device] = string(kvPair.Value)
 	} else {
-		keys, _, err := kv.Keys("diot/devices/", "/", nil)
+		keys, _, err := kv.Keys("dhome/devices/", "/", nil)
 		if err != nil {
 			log.Printf("failed to get device address, error: " + err.Error())
 			http.Error(w, "{\"error\":\"failed to get device address, "+err.Error()+"\"}", http.StatusInternalServerError)
@@ -418,10 +443,9 @@ func loginPageHandle(w http.ResponseWriter) {
 // Profile Page Request
 func profilePageHandle(w http.ResponseWriter) {
 
-	kv := consul.KV()
 	deviceAddress := make(map[string]string)
 
-	keys, _, err := kv.Keys("diot/devices/", "/", nil)
+	keys, _, err := kv.Keys("dhome/devices/", "/", nil)
 	if err != nil {
 		log.Printf("failed to get device address, error: " + err.Error())
 		http.Error(w, "{\"error\":\"failed to get device address, "+err.Error()+"\"}", http.StatusInternalServerError)
@@ -489,7 +513,7 @@ func profilePageHandle(w http.ResponseWriter) {
 }
 
 // Static file request handler
-func sendFile(w http.ResponseWriter, r *http.Request, file string) {
+func serveFile(w http.ResponseWriter, r *http.Request, file string) {
 	filepath, valid := static_files[file]
 	if !valid {
 		http.Error(w, fmt.Sprintf("requested file %s is Invalid", file), http.StatusInternalServerError)

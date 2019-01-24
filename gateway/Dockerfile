@@ -4,7 +4,7 @@ RUN curl -sL https://github.com/alexellis/license-check/releases/download/0.2.2/
       > /usr/bin/license-check \
       && chmod +x /usr/bin/license-check
 
-WORKDIR /go/src/github.com/dailyiot/dailyiot/gateway
+WORKDIR /go/src/github.com/dailyhome/daily-home/gateway
 
 
 COPY vendor         vendor
@@ -26,7 +26,7 @@ EXPOSE 8080
 ENV http_proxy      ""
 ENV https_proxy     ""
 
-COPY --from=build /go/src/github.com/dailyiot/dailyiot/gateway/gateway    .
+COPY --from=build /go/src/github.com/dailyhome/daily-home/gateway/gateway    .
 COPY assets     assets
 
 RUN chown -R app:app ./

@@ -30,7 +30,7 @@ function getServer() {
         var protocol = location.protocol;
         var slashes = protocol.concat("//");
         server = slashes.concat(window.location.hostname);
-        server = server.concat("/function/diot-gateway");
+        server = server.concat("/function/dhome-gateway");
     }
     return server;
 };
@@ -88,7 +88,7 @@ document.getElementsByName("item").forEach( function(elem) {
 
       // Do value specific Operation
       if (value == "logout") {
-    	document.cookie = "diottoken=invalid";
+    	document.cookie = "dhometoken=invalid";
     	document.location.reload();
       } else {
           document.getElementsByName("deviceContainer").forEach(function(elem) {

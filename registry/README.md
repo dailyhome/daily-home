@@ -1,9 +1,7 @@
-Build and Deploy registry for DailyIot platform
-
-> This is a direct update on Consul with the Autopilot Pattern at https://github.com/sdelrio/consul
+Deploy registry for DailyIot platform
 
 ### Getting Started
 Build and deploy
 ```bash
-./build.sh && ./deploy.sh
+./deploy_consul.sh
 ```

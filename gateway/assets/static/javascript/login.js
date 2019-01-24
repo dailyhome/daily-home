@@ -7,7 +7,7 @@ function getServer() {
         var protocol = location.protocol;
         var slashes = protocol.concat("//");
         server = slashes.concat(window.location.hostname);
-        server = server.concat("/function/diot-gateway");
+        server = server.concat("/function/dhome-gateway");
     }
     return server;
 };
@@ -35,8 +35,8 @@ function loginRequest() {
         }
 
         if (this.readyState == 4 && this.status == 200) {
-            console.log(this.getResponseHeader('diotcookie'));
-            document.cookie = this.getResponseHeader('diotcookie');
+            console.log(this.getResponseHeader('dhomecookie'));
+            document.cookie = this.getResponseHeader('dhomecookie');
             document.location.reload();
         }
     };
